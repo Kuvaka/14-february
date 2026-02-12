@@ -563,32 +563,94 @@
             ctx.arc(x+r*1.4, y, r*0.6, 0, Math.PI*2);
             ctx.fill();
         }
+        function drawVapeBody(x, y, w, h, flipped) {
+            // Main body - dark gradient
+            const grd = ctx.createLinearGradient(x, y, x + w, y);
+            grd.addColorStop(0, '#2a2a2e');
+            grd.addColorStop(0.3, '#3d3d42');
+            grd.addColorStop(0.5, '#4a4a50');
+            grd.addColorStop(0.7, '#3d3d42');
+            grd.addColorStop(1, '#2a2a2e');
+            ctx.fillStyle = grd;
+
+            const r = 8 * s();
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, r);
+            ctx.fill();
+
+            // Side highlight
+            ctx.fillStyle = 'rgba(255,255,255,0.08)';
+            ctx.fillRect(x + 4*s(), y + r, 6*s(), h - r*2);
+
+            // Screen area
+            const scrW = w * 0.5;
+            const scrH = Math.min(28 * s(), h * 0.15);
+            const scrX = x + (w - scrW) / 2;
+            const scrY = flipped ? y + h - scrH - 14*s() : y + 14*s();
+
+            ctx.fillStyle = '#111';
+            ctx.beginPath();
+            ctx.roundRect(scrX, scrY, scrW, scrH, 3*s());
+            ctx.fill();
+
+            // Screen glow
+            ctx.fillStyle = '#00e5ff';
+            ctx.globalAlpha = 0.6;
+            ctx.beginPath();
+            ctx.roundRect(scrX + 2*s(), scrY + 2*s(), scrW - 4*s(), scrH - 4*s(), 2*s());
+            ctx.fill();
+            ctx.globalAlpha = 1;
+
+            // Battery bar on screen
+            ctx.fillStyle = '#00ff88';
+            ctx.fillRect(scrX + 4*s(), scrY + scrH * 0.35, (scrW - 8*s()) * 0.7, scrH * 0.3);
+
+            // WAKA text
+            ctx.fillStyle = 'rgba(255,255,255,0.25)';
+            ctx.font = `bold ${9*s()}px Arial`;
+            ctx.textAlign = 'center';
+            const textY = flipped ? scrY - 8*s() : scrY + scrH + 14*s();
+            ctx.fillText('WAKA', x + w/2, textY);
+        }
+
+        function drawMouthpiece(x, y, w, h, flipped) {
+            // Mouthpiece - tapered top piece
+            const mpW = w * 0.6;
+            const mpH = Math.min(18 * s(), h);
+            const mpX = x + (w - mpW) / 2;
+            const mpY = flipped ? y + h - mpH : y;
+
+            const grd = ctx.createLinearGradient(mpX, mpY, mpX + mpW, mpY);
+            grd.addColorStop(0, '#1a1a1e');
+            grd.addColorStop(0.5, '#333338');
+            grd.addColorStop(1, '#1a1a1e');
+            ctx.fillStyle = grd;
+
+            ctx.beginPath();
+            ctx.roundRect(mpX, mpY, mpW, mpH, 4*s());
+            ctx.fill();
+        }
+
         function drawPipe(p) {
-            const pw = PIPE_WIDTH*s(), pg = PIPE_GAP*s();
-            const capH = 26*s(), capExtra = 6*s(), borderW = 2*s();
-            ctx.fillStyle = '#74bf2e';
-            ctx.fillRect(p.x, 0, pw, p.topH);
-            ctx.fillStyle = '#548a20';
-            ctx.fillRect(p.x, 0, borderW, p.topH);
-            ctx.fillRect(p.x+pw-borderW, 0, borderW, p.topH);
-            ctx.fillStyle = '#74bf2e';
-            ctx.fillRect(p.x-capExtra, p.topH-capH, pw+capExtra*2, capH);
-            ctx.strokeStyle = '#3b2d1e'; ctx.lineWidth = borderW;
-            ctx.strokeRect(p.x-capExtra, p.topH-capH, pw+capExtra*2, capH);
-            ctx.fillStyle = 'rgba(255,255,255,0.15)';
-            ctx.fillRect(p.x+6*s(), 0, 8*s(), p.topH-capH);
-            const botY = p.topH+pg, botH = H-botY;
-            ctx.fillStyle = '#74bf2e';
-            ctx.fillRect(p.x, botY, pw, botH);
-            ctx.fillStyle = '#548a20';
-            ctx.fillRect(p.x, botY, borderW, botH);
-            ctx.fillRect(p.x+pw-borderW, botY, borderW, botH);
-            ctx.fillStyle = '#74bf2e';
-            ctx.fillRect(p.x-capExtra, botY, pw+capExtra*2, capH);
-            ctx.strokeStyle = '#3b2d1e'; ctx.lineWidth = borderW;
-            ctx.strokeRect(p.x-capExtra, botY, pw+capExtra*2, capH);
-            ctx.fillStyle = 'rgba(255,255,255,0.15)';
-            ctx.fillRect(p.x+6*s(), botY+capH, 8*s(), botH-capH);
+            const pw = PIPE_WIDTH * s();
+            const pg = PIPE_GAP * s();
+
+            // Top vape (flipped, mouthpiece pointing down)
+            const topH = p.topH;
+            if (topH > 20*s()) {
+                const mpZone = Math.min(18*s(), topH * 0.15);
+                drawVapeBody(p.x, 0, pw, topH - mpZone, true);
+                drawMouthpiece(p.x, topH - mpZone, pw, mpZone, false);
+            }
+
+            // Bottom vape (normal, mouthpiece pointing up)
+            const botY = p.topH + pg;
+            const botH = H - botY;
+            if (botH > 20*s()) {
+                const mpZone = Math.min(18*s(), botH * 0.15);
+                drawMouthpiece(p.x, botY, pw, mpZone, false);
+                drawVapeBody(p.x, botY + mpZone, pw, botH - mpZone, false);
+            }
         }
         function drawBird() {
             const bs = BIRD_SIZE * s();
