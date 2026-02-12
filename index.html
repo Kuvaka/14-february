@@ -216,7 +216,7 @@
             &#1050;&#1072;&#1078;&#1076;&#1099;&#1077; 5 &#1086;&#1095;&#1082;&#1086;&#1074; &#1086;&#1090;&#1082;&#1088;&#1099;&#1074;&#1072;&#1102;&#1090; &#1089;&#1083;&#1091;&#1095;&#1072;&#1081;&#1085;&#1091;&#1102; &#1073;&#1091;&#1082;&#1074;&#1091;.<br>
             &#1059;&#1087;&#1072;&#1083;&#1072; &#8212; &#1089;&#1095;&#1105;&#1090; &#1089;&#1073;&#1088;&#1072;&#1089;&#1099;&#1074;&#1072;&#1077;&#1090;&#1089;&#1103;, &#1085;&#1086; &#1073;&#1091;&#1082;&#1074;&#1099; &#1086;&#1089;&#1090;&#1072;&#1102;&#1090;&#1089;&#1103;!
         </div>
-        <div class="rules-word-preview" id="rulesPreview"></div>
+        <div class="rules-word-preview">? ? ? ? ?&nbsp; &nbsp;? ? ? ? ?</div>
         <button class="rules-btn" id="rulesBtn">&#1053;&#1072;&#1095;&#1072;&#1090;&#1100;! &#128293;</button>
     </div>
 
@@ -242,6 +242,10 @@
     </div>
 
     <script>
+    // Clear old version data
+    localStorage.removeItem('flappyRevealed');
+    localStorage.removeItem('flappyBest');
+
     // ---- Secret word ----
     const SECRET = 'БЕЛЫЕ ШТАНЫ';
     // Only actual letters (no spaces)
@@ -299,7 +303,6 @@
         function showRules() {
             welcome.classList.add('hidden');
             document.getElementById('rules').classList.remove('hidden');
-            document.getElementById('rulesPreview').textContent = getWordDisplay();
         }
         welcome.addEventListener('click', showRules);
         welcome.addEventListener('touchstart', function(e) { e.preventDefault(); showRules(); });
