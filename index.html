@@ -227,6 +227,7 @@
         <div class="win-title">&#1058;&#1099; &#1086;&#1090;&#1082;&#1088;&#1099;&#1083;&#1072; &#1089;&#1083;&#1086;&#1074;&#1086;!</div>
         <div class="win-word" id="winWord"></div>
         <div class="win-sub">&#1048;&#1076;&#1080; &#1079;&#1072; &#1087;&#1086;&#1076;&#1072;&#1088;&#1082;&#1086;&#1084;! &#128149;</div>
+        <button class="rules-btn" id="resetBtn" style="margin-top:16px;font-size:16px;padding:10px 24px;background:#764ba2;">&#1057;&#1073;&#1088;&#1086;&#1089;&#1080;&#1090;&#1100; &#1080; &#1080;&#1075;&#1088;&#1072;&#1090;&#1100; &#1079;&#1072;&#1085;&#1086;&#1074;&#1086;</button>
     </div>
 
     <!-- Game -->
@@ -888,6 +889,13 @@
             if (revealedCount >= TOTAL_LETTERS) { checkWin(); return; }
             init();
             overlayWord.textContent = getWordDisplay();
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            localStorage.removeItem('flappyRevealOrder');
+            localStorage.removeItem('flappyRevealedSet');
+            location.reload();
         });
 
         // Prevent scroll on mobile
