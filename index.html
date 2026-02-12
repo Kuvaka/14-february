@@ -96,9 +96,105 @@
         #overlay button:active {
             transform: scale(0.95);
         }
+
+        /* Welcome screen */
+        #welcome {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b8a, #ff4571, #d63384);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        #welcome.hidden {
+            display: none;
+        }
+
+        .hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            animation: floatHeart linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .welcome-heart {
+            font-size: 80px;
+            animation: pulse 1.2s ease-in-out infinite;
+            margin-bottom: 24px;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .welcome-text {
+            color: #fff;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            padding: 0 24px;
+            line-height: 1.5;
+            max-width: 360px;
+            margin-bottom: 32px;
+        }
+
+        .welcome-tap {
+            color: rgba(255,255,255,0.85);
+            font-size: 18px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+            animation: tapPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes tapPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
+    <div id="welcome">
+        <div class="hearts" id="heartsContainer"></div>
+        <div class="welcome-heart">&#10084;&#65039;</div>
+        <div class="welcome-text">&#128149; &#1051;&#1102;&#1073;&#1080;&#1084;&#1072;&#1103;, &#1087;&#1086;&#1079;&#1076;&#1088;&#1072;&#1074;&#1083;&#1103;&#1102; &#1089; 14 &#1092;&#1077;&#1074;&#1088;&#1072;&#1083;&#1103;! &#128149;</div>
+        <div class="welcome-tap">&#1045;&#1089;&#1083;&#1080; &#1093;&#1086;&#1095;&#1077;&#1096;&#1100; &#1089;&#1074;&#1086;&#1081; &#1087;&#1086;&#1076;&#1072;&#1088;&#1086;&#1082; &#8212; &#1090;&#1072;&#1087;&#1085;&#1080; &#128071;</div>
+    </div>
+
     <div id="gameContainer">
         <canvas id="game"></canvas>
         <div id="overlay">
@@ -110,6 +206,31 @@
     </div>
 
     <script>
+    // Floating hearts on welcome screen
+    (function() {
+        const container = document.getElementById('heartsContainer');
+        const emojis = ['\u2764\ufe0f', '\uD83D\uDC95', '\uD83D\uDC96', '\uD83D\uDC97', '\uD83D\uDC98', '\uD83D\uDC9D'];
+        for (let i = 0; i < 20; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.fontSize = (16 + Math.random() * 24) + 'px';
+            heart.style.animationDuration = (4 + Math.random() * 6) + 's';
+            heart.style.animationDelay = (Math.random() * 5) + 's';
+            container.appendChild(heart);
+        }
+
+        const welcome = document.getElementById('welcome');
+        welcome.addEventListener('click', function() {
+            welcome.classList.add('hidden');
+        });
+        welcome.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            welcome.classList.add('hidden');
+        });
+    })();
+
     (function() {
         const canvas = document.getElementById('game');
         const ctx = canvas.getContext('2d');
