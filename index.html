@@ -242,9 +242,11 @@
     </div>
 
     <script>
-    // Clear old version data
+    // Clear all saved data for fresh start
     localStorage.removeItem('flappyRevealed');
     localStorage.removeItem('flappyBest');
+    localStorage.removeItem('flappyRevealOrder');
+    localStorage.removeItem('flappyRevealedSet');
 
     // ---- Secret word ----
     const SECRET = 'БЕЛЫЕ ШТАНЫ';
