@@ -364,80 +364,70 @@
         let particles = [];
 
         function spawnParticles(x, y, isLetter) {
-            const count = isLetter ? 20 : 10;
+            const count = isLetter ? 24 : 12;
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
-                const speed = (1.5 + Math.random() * 3) * s();
+                const speed = (2 + Math.random() * 4) * s();
                 const isHeart = Math.random() < 0.5;
                 particles.push({
                     x: x,
                     y: y,
                     vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed - 1.5 * s(),
-                    life: 1,
-                    decay: 0.015 + Math.random() * 0.01,
-                    size: (isHeart ? 10 : 5) + Math.random() * 6,
+                    vy: Math.sin(angle) * speed - 2 * s(),
+                    life: 1.0,
+                    decay: 0.008 + Math.random() * 0.008,
+                    size: (isHeart ? 14 : 8) + Math.random() * 8,
                     type: isHeart ? 'heart' : 'sparkle',
                     color: isHeart
                         ? ['#ff4571','#ff6b8a','#d63384','#ff85a1'][Math.floor(Math.random()*4)]
-                        : ['#FFD700','#FFF','#ffec80','#ffe0f0'][Math.floor(Math.random()*4)],
+                        : ['#FFD700','#FFF','#ffec80','#ffd0e8'][Math.floor(Math.random()*4)],
                     rotation: Math.random() * Math.PI * 2,
-                    rotSpeed: (Math.random() - 0.5) * 0.15
+                    rotSpeed: (Math.random() - 0.5) * 0.2
                 });
             }
         }
 
         function updateParticles() {
             for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.12 * s();
-                p.life -= p.decay;
-                p.rotation += p.rotSpeed;
-                if (p.life <= 0) particles.splice(i, 1);
+                const pt = particles[i];
+                pt.x += pt.vx;
+                pt.y += pt.vy;
+                pt.vy += 0.1 * s();
+                pt.vx *= 0.99;
+                pt.life -= pt.decay;
+                pt.rotation += pt.rotSpeed;
+                if (pt.life <= 0) particles.splice(i, 1);
             }
         }
 
         function drawParticles() {
-            for (const p of particles) {
+            for (const pt of particles) {
                 ctx.save();
-                ctx.globalAlpha = p.life;
-                ctx.translate(p.x, p.y);
-                ctx.rotate(p.rotation);
-                const sz = p.size * s() * p.life;
+                ctx.globalAlpha = Math.max(0, pt.life);
+                ctx.translate(pt.x, pt.y);
+                ctx.rotate(pt.rotation);
+                const sz = pt.size * s() * (0.5 + pt.life * 0.5);
 
-                if (p.type === 'heart') {
-                    drawMiniHeart(0, 0, sz, p.color);
+                if (pt.type === 'heart') {
+                    // Simple heart shape
+                    ctx.fillStyle = pt.color;
+                    ctx.font = `${Math.round(sz)}px serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('\u2764', 0, 0);
                 } else {
-                    // 4-pointed sparkle
-                    ctx.fillStyle = p.color;
+                    // Sparkle: filled circle with glow
+                    ctx.fillStyle = pt.color;
+                    ctx.shadowColor = pt.color;
+                    ctx.shadowBlur = sz * 0.8;
                     ctx.beginPath();
-                    for (let j = 0; j < 4; j++) {
-                        const a = (j / 4) * Math.PI * 2;
-                        const aM = a + Math.PI / 4;
-                        ctx.lineTo(Math.cos(a) * sz, Math.sin(a) * sz);
-                        ctx.lineTo(Math.cos(aM) * sz * 0.3, Math.sin(aM) * sz * 0.3);
-                    }
-                    ctx.closePath();
+                    ctx.arc(0, 0, sz * 0.4, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.shadowBlur = 0;
                 }
 
                 ctx.restore();
             }
-        }
-
-        function drawMiniHeart(x, y, size, color) {
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            const s2 = size / 2;
-            ctx.moveTo(x, y + s2 * 0.3);
-            ctx.bezierCurveTo(x, y - s2 * 0.5, x - s2, y - s2 * 0.5, x - s2, y + s2 * 0.1);
-            ctx.bezierCurveTo(x - s2, y + s2 * 0.6, x, y + s2, x, y + s2);
-            ctx.bezierCurveTo(x, y + s2, x + s2, y + s2 * 0.6, x + s2, y + s2 * 0.1);
-            ctx.bezierCurveTo(x + s2, y - s2 * 0.5, x, y - s2 * 0.5, x, y + s2 * 0.3);
-            ctx.closePath();
-            ctx.fill();
         }
 
         function init() {
