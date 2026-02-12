@@ -357,7 +357,7 @@
         const PIPE_GAP = 140;
         const PIPE_SPEED = 2.2;
         const PIPE_SPAWN = 160;
-        const BIRD_SIZE = 20;
+        const BIRD_SIZE = 22;
         const GROUND_H = 60;
 
         let bird, pipes, score, gameState, frame, groundX;
@@ -591,26 +591,141 @@
             ctx.fillRect(p.x+6*s(), botY+capH, 8*s(), botH-capH);
         }
         function drawBird() {
-            const bs = BIRD_SIZE*s();
-            const cx = bird.x+bs/2, cy = bird.y+bs/2;
-            ctx.save(); ctx.translate(cx, cy); ctx.rotate(bird.rotation);
-            ctx.fillStyle = '#f8c53a';
-            ctx.beginPath(); ctx.ellipse(0,0,bs*0.65,bs*0.5,0,0,Math.PI*2); ctx.fill();
-            ctx.strokeStyle = '#543847'; ctx.lineWidth = 1.5*s(); ctx.stroke();
-            ctx.fillStyle = '#fae89d';
-            ctx.beginPath(); ctx.ellipse(bs*0.05,bs*0.15,bs*0.35,bs*0.3,0,0,Math.PI*2); ctx.fill();
-            const wingFlap = Math.sin((frame-bird.flapFrame)*0.5)*0.2;
-            ctx.fillStyle = '#e8a43a';
-            ctx.beginPath(); ctx.ellipse(-bs*0.1,bs*0.05+wingFlap*bs,bs*0.35,bs*0.22,-0.3,0,Math.PI*2); ctx.fill();
-            ctx.strokeStyle = '#543847'; ctx.lineWidth = 1*s(); ctx.stroke();
+            const bs = BIRD_SIZE * s();
+            const cx = bird.x + bs / 2;
+            const cy = bird.y + bs / 2;
+
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(bird.rotation * 0.6);
+
+            const r = bs * 0.9; // base radius
+
+            // --- Fluffy body (behind head) ---
+            ctx.fillStyle = '#faf0e6';
+            ctx.beginPath();
+            ctx.ellipse(0, r * 0.35, r * 0.65, r * 0.55, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Body fluff puffs
+            ctx.fillStyle = '#f5e6d3';
+            const bodyPuffs = [[-r*0.35, r*0.2, r*0.28], [r*0.3, r*0.25, r*0.25], [0, r*0.55, r*0.3]];
+            for (const [px, py, pr] of bodyPuffs) {
+                ctx.beginPath(); ctx.arc(px, py, pr, 0, Math.PI * 2); ctx.fill();
+            }
+
+            // --- Tail (small fluff) ---
+            ctx.fillStyle = '#faf0e6';
+            ctx.beginPath();
+            ctx.arc(-r * 0.6, r * 0.1, r * 0.22, 0, Math.PI * 2);
+            ctx.fill();
+
+            // --- Floppy ears ---
+            // Left ear
+            ctx.fillStyle = '#f0d9c1';
+            ctx.beginPath();
+            ctx.ellipse(-r * 0.55, -r * 0.1, r * 0.22, r * 0.4, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+            // Ear fluff
+            ctx.fillStyle = '#faf0e6';
+            ctx.beginPath();
+            ctx.arc(-r * 0.48, -r * 0.2, r * 0.12, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Right ear
+            ctx.fillStyle = '#f0d9c1';
+            ctx.beginPath();
+            ctx.ellipse(r * 0.55, -r * 0.1, r * 0.22, r * 0.4, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#faf0e6';
+            ctx.beginPath();
+            ctx.arc(r * 0.48, -r * 0.2, r * 0.12, 0, Math.PI * 2);
+            ctx.fill();
+
+            // --- Head (fluffy circle) ---
+            ctx.fillStyle = '#faf0e6';
+            ctx.beginPath();
+            ctx.arc(0, -r * 0.1, r * 0.55, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Fluffy puffs around head
+            ctx.fillStyle = '#fff5eb';
+            const puffs = [
+                [-r*0.35, -r*0.35, r*0.2],
+                [r*0.35, -r*0.35, r*0.2],
+                [-r*0.42, -r*0.05, r*0.18],
+                [r*0.42, -r*0.05, r*0.18],
+                [0, -r*0.52, r*0.2],
+                [-r*0.2, -r*0.48, r*0.16],
+                [r*0.2, -r*0.48, r*0.16]
+            ];
+            for (const [px, py, pr] of puffs) {
+                ctx.beginPath();
+                ctx.arc(px, py, pr, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // --- Eyes ---
+            // White
             ctx.fillStyle = '#fff';
-            ctx.beginPath(); ctx.arc(bs*0.22,-bs*0.12,bs*0.2,0,Math.PI*2); ctx.fill();
-            ctx.strokeStyle = '#543847'; ctx.lineWidth = 1*s(); ctx.stroke();
-            ctx.fillStyle = '#000';
-            ctx.beginPath(); ctx.arc(bs*0.28,-bs*0.12,bs*0.09,0,Math.PI*2); ctx.fill();
-            ctx.fillStyle = '#e87040';
-            ctx.beginPath(); ctx.moveTo(bs*0.45,-bs*0.02); ctx.lineTo(bs*0.8,bs*0.06); ctx.lineTo(bs*0.45,bs*0.15); ctx.closePath(); ctx.fill();
-            ctx.strokeStyle = '#543847'; ctx.lineWidth = 1*s(); ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(-r * 0.18, -r * 0.18, r * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(r * 0.18, -r * 0.18, r * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pupils
+            ctx.fillStyle = '#2c1810';
+            ctx.beginPath();
+            ctx.arc(-r * 0.15, -r * 0.18, r * 0.1, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(r * 0.21, -r * 0.18, r * 0.1, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eye shine
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(-r * 0.12, -r * 0.22, r * 0.04, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(r * 0.24, -r * 0.22, r * 0.04, 0, Math.PI * 2);
+            ctx.fill();
+
+            // --- Nose ---
+            ctx.fillStyle = '#2c1810';
+            ctx.beginPath();
+            ctx.ellipse(r * 0.03, -r * 0.02, r * 0.08, r * 0.06, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Nose shine
+            ctx.fillStyle = 'rgba(255,255,255,0.4)';
+            ctx.beginPath();
+            ctx.arc(r * 0.01, -r * 0.04, r * 0.025, 0, Math.PI * 2);
+            ctx.fill();
+
+            // --- Mouth ---
+            ctx.strokeStyle = '#5a3825';
+            ctx.lineWidth = 1.2 * s();
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(r * 0.03, r * 0.03);
+            ctx.quadraticCurveTo(r * -0.08, r * 0.12, r * -0.15, r * 0.08);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(r * 0.03, r * 0.03);
+            ctx.quadraticCurveTo(r * 0.14, r * 0.12, r * 0.22, r * 0.08);
+            ctx.stroke();
+
+            // --- Tongue (when flapping) ---
+            if (bird.vy < -2 * s()) {
+                ctx.fillStyle = '#ff8fa3';
+                ctx.beginPath();
+                ctx.ellipse(r * 0.03, r * 0.1, r * 0.06, r * 0.08, 0, 0, Math.PI);
+                ctx.fill();
+            }
+
             ctx.restore();
         }
         function drawGround() {
