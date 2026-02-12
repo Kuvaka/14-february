@@ -8,11 +8,7 @@
     <meta http-equiv="Expires" content="0">
     <title>Flappy Bird</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: #4ec0ca;
@@ -35,16 +31,11 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
-        canvas {
-            display: block;
-        }
+        canvas { display: block; }
 
         #overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -52,197 +43,274 @@
             background: rgba(0, 0, 0, 0.4);
             z-index: 10;
         }
-
-        #overlay.hidden {
-            display: none;
-        }
+        #overlay.hidden { display: none; }
 
         #overlay h1 {
-            color: #fff;
-            font-size: 36px;
+            color: #fff; font-size: 36px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             margin-bottom: 10px;
         }
-
         #overlay p {
-            color: #fff;
-            font-size: 18px;
+            color: #fff; font-size: 18px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             margin-bottom: 20px;
         }
-
         #overlay .score-display {
-            color: #FFD700;
-            font-size: 28px;
-            font-weight: bold;
+            color: #FFD700; font-size: 24px; font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+        #overlay .word-display {
+            color: #fff; font-size: 32px; font-weight: bold;
+            letter-spacing: 4px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             margin-bottom: 20px;
+            font-family: monospace;
         }
 
         #overlay button {
-            padding: 12px 32px;
-            font-size: 20px;
-            background: #e8a43a;
-            color: #fff;
-            border: 3px solid #543847;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
+            padding: 12px 32px; font-size: 20px;
+            background: #e8a43a; color: #fff;
+            border: 3px solid #543847; border-radius: 12px;
+            cursor: pointer; font-weight: bold;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
             transition: transform 0.1s;
         }
+        #overlay button:hover { transform: scale(1.05); }
+        #overlay button:active { transform: scale(0.95); }
 
-        #overlay button:hover {
-            transform: scale(1.05);
-        }
-
-        #overlay button:active {
-            transform: scale(0.95);
-        }
-
-        /* Welcome screen */
-        #welcome {
+        /* ---- Full-screen screens ---- */
+        .fullscreen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ff6b8a, #ff4571, #d63384);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            cursor: pointer;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 100; cursor: pointer;
             touch-action: manipulation;
         }
+        .fullscreen.hidden { display: none; }
 
-        #welcome.hidden {
-            display: none;
+        /* Welcome */
+        #welcome {
+            background: linear-gradient(135deg, #ff6b8a, #ff4571, #d63384);
         }
-
         .hearts {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
+            position: absolute; width: 100%; height: 100%;
+            overflow: hidden; pointer-events: none;
         }
-
         .heart {
-            position: absolute;
-            font-size: 24px;
-            animation: floatHeart linear infinite;
-            opacity: 0.5;
+            position: absolute; font-size: 24px;
+            animation: floatHeart linear infinite; opacity: 0.5;
         }
-
         @keyframes floatHeart {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.6;
-            }
-            90% {
-                opacity: 0.6;
-            }
-            100% {
-                transform: translateY(-10vh) rotate(360deg);
-                opacity: 0;
-            }
+            0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10%  { opacity: 0.6; }
+            90%  { opacity: 0.6; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
-
         .welcome-heart {
             font-size: 80px;
             animation: pulse 1.2s ease-in-out infinite;
             margin-bottom: 24px;
             filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
         }
-
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.15); }
         }
-
         .welcome-text {
-            color: #fff;
-            font-size: 28px;
-            font-weight: bold;
+            color: #fff; font-size: 28px; font-weight: bold;
             text-align: center;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-            padding: 0 24px;
-            line-height: 1.5;
-            max-width: 360px;
-            margin-bottom: 32px;
+            padding: 0 24px; line-height: 1.5;
+            max-width: 360px; margin-bottom: 32px;
         }
-
         .welcome-tap {
-            color: rgba(255,255,255,0.85);
-            font-size: 18px;
+            color: rgba(255,255,255,0.85); font-size: 18px;
             text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
             animation: tapPulse 2s ease-in-out infinite;
         }
-
         @keyframes tapPulse {
             0%, 100% { opacity: 0.6; }
             50% { opacity: 1; }
         }
+
+        /* Rules */
+        #rules {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        .rules-icon {
+            font-size: 60px; margin-bottom: 20px;
+        }
+        .rules-title {
+            color: #FFD700; font-size: 26px; font-weight: bold;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            margin-bottom: 24px;
+        }
+        .rules-text {
+            color: #fff; font-size: 18px;
+            text-align: center; line-height: 1.7;
+            padding: 0 28px; max-width: 360px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+            margin-bottom: 16px;
+        }
+        .rules-word-preview {
+            font-family: monospace;
+            font-size: 30px; font-weight: bold;
+            letter-spacing: 6px; color: #FFD700;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            margin-bottom: 28px;
+        }
+        .rules-btn {
+            padding: 14px 40px; font-size: 22px;
+            background: #ff4571; color: #fff;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 14px; cursor: pointer;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+        .rules-btn:hover { transform: scale(1.05); }
+        .rules-btn:active { transform: scale(0.95); }
+
+        /* Win screen */
+        #winScreen {
+            background: linear-gradient(135deg, #f093fb, #f5576c, #ff6b8a);
+        }
+        .win-icon { font-size: 70px; margin-bottom: 16px; }
+        .win-title {
+            color: #FFD700; font-size: 30px; font-weight: bold;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            margin-bottom: 12px;
+        }
+        .win-word {
+            font-family: monospace;
+            font-size: 36px; font-weight: bold;
+            letter-spacing: 6px; color: #fff;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            margin-bottom: 8px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        .win-sub {
+            color: rgba(255,255,255,0.9); font-size: 18px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+            margin-bottom: 24px;
+        }
     </style>
 </head>
 <body>
-    <div id="welcome">
+    <!-- Welcome screen -->
+    <div id="welcome" class="fullscreen">
         <div class="hearts" id="heartsContainer"></div>
         <div class="welcome-heart">&#10084;&#65039;</div>
         <div class="welcome-text">&#128149; &#1051;&#1102;&#1073;&#1080;&#1084;&#1072;&#1103;, &#1087;&#1086;&#1079;&#1076;&#1088;&#1072;&#1074;&#1083;&#1103;&#1102; &#1089; 14 &#1092;&#1077;&#1074;&#1088;&#1072;&#1083;&#1103;! &#128149;</div>
         <div class="welcome-tap">&#1045;&#1089;&#1083;&#1080; &#1093;&#1086;&#1095;&#1077;&#1096;&#1100; &#1089;&#1074;&#1086;&#1081; &#1087;&#1086;&#1076;&#1072;&#1088;&#1086;&#1082; &#8212; &#1090;&#1072;&#1087;&#1085;&#1080; &#128071;</div>
     </div>
 
+    <!-- Rules screen -->
+    <div id="rules" class="fullscreen hidden">
+        <div class="rules-icon">&#127918;</div>
+        <div class="rules-title">&#1050;&#1072;&#1082; &#1080;&#1075;&#1088;&#1072;&#1090;&#1100;?</div>
+        <div class="rules-text">
+            &#1058;&#1077;&#1073;&#1077; &#1085;&#1091;&#1078;&#1085;&#1086; &#1086;&#1090;&#1082;&#1088;&#1099;&#1090;&#1100; &#1089;&#1083;&#1086;&#1074;&#1086;, &#1075;&#1076;&#1077; &#1089;&#1087;&#1088;&#1103;&#1090;&#1072;&#1085; &#1090;&#1074;&#1086;&#1081; &#1087;&#1086;&#1076;&#1072;&#1088;&#1086;&#1082;!<br><br>
+            &#1053;&#1072;&#1073;&#1080;&#1088;&#1072;&#1081; &#1086;&#1095;&#1082;&#1080; &#8212; &#1082;&#1072;&#1078;&#1076;&#1086;&#1077; &#1086;&#1095;&#1082;&#1086; &#1086;&#1090;&#1082;&#1088;&#1099;&#1074;&#1072;&#1077;&#1090; &#1073;&#1091;&#1082;&#1074;&#1091;.<br>
+            &#1054;&#1095;&#1082;&#1080; &#1089;&#1086;&#1093;&#1088;&#1072;&#1085;&#1103;&#1102;&#1090;&#1089;&#1103; &#1084;&#1077;&#1078;&#1076;&#1091; &#1087;&#1086;&#1087;&#1099;&#1090;&#1082;&#1072;&#1084;&#1080;!
+        </div>
+        <div class="rules-word-preview" id="rulesPreview"></div>
+        <button class="rules-btn" id="rulesBtn">&#1053;&#1072;&#1095;&#1072;&#1090;&#1100;! &#128293;</button>
+    </div>
+
+    <!-- Win screen -->
+    <div id="winScreen" class="fullscreen hidden">
+        <div class="hearts" id="winHeartsContainer"></div>
+        <div class="win-icon">&#127881;&#127873;&#127881;</div>
+        <div class="win-title">&#1058;&#1099; &#1086;&#1090;&#1082;&#1088;&#1099;&#1083;&#1072; &#1089;&#1083;&#1086;&#1074;&#1086;!</div>
+        <div class="win-word" id="winWord"></div>
+        <div class="win-sub">&#1048;&#1076;&#1080; &#1079;&#1072; &#1087;&#1086;&#1076;&#1072;&#1088;&#1082;&#1086;&#1084;! &#128149;</div>
+    </div>
+
+    <!-- Game -->
     <div id="gameContainer">
         <canvas id="game"></canvas>
         <div id="overlay">
             <h1>Flappy Bird</h1>
-            <p id="overlayText">Нажмите чтобы начать</p>
+            <p id="overlayText">&#1058;&#1072;&#1087;&#1085;&#1080; &#1095;&#1090;&#1086;&#1073;&#1099; &#1083;&#1077;&#1090;&#1077;&#1090;&#1100;</p>
+            <div class="word-display" id="overlayWord"></div>
             <div class="score-display hidden" id="finalScore"></div>
-            <button id="startBtn">Играть</button>
+            <button id="startBtn">&#1048;&#1075;&#1088;&#1072;&#1090;&#1100;</button>
         </div>
     </div>
 
     <script>
-    // Floating hearts on welcome screen
+    // ---- Secret word ----
+    const SECRET = 'БЕЛЫЕ ШТАНЫ';
+    const LETTERS = SECRET.replace(/\s/g, '').split('');
+    const TOTAL_LETTERS = LETTERS.length; // 10
+
+    // Persistent best across attempts (used to reveal letters)
+    let revealedCount = parseInt(localStorage.getItem('flappyRevealed') || '0');
+
+    function getWordDisplay(count) {
+        let idx = 0;
+        return SECRET.split('').map(ch => {
+            if (ch === ' ') return '  ';
+            idx++;
+            return idx <= count ? ch : '_';
+        }).join(' ');
+    }
+
+    // ---- Welcome screen ----
     (function() {
         const container = document.getElementById('heartsContainer');
         const emojis = ['\u2764\ufe0f', '\uD83D\uDC95', '\uD83D\uDC96', '\uD83D\uDC97', '\uD83D\uDC98', '\uD83D\uDC9D'];
         for (let i = 0; i < 20; i++) {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            heart.style.left = Math.random() * 100 + '%';
-            heart.style.fontSize = (16 + Math.random() * 24) + 'px';
-            heart.style.animationDuration = (4 + Math.random() * 6) + 's';
-            heart.style.animationDelay = (Math.random() * 5) + 's';
-            container.appendChild(heart);
+            const h = document.createElement('div');
+            h.className = 'heart';
+            h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            h.style.left = Math.random() * 100 + '%';
+            h.style.fontSize = (16 + Math.random() * 24) + 'px';
+            h.style.animationDuration = (4 + Math.random() * 6) + 's';
+            h.style.animationDelay = (Math.random() * 5) + 's';
+            container.appendChild(h);
         }
 
         const welcome = document.getElementById('welcome');
-        welcome.addEventListener('click', function() {
+        function showRules() {
             welcome.classList.add('hidden');
-        });
-        welcome.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            welcome.classList.add('hidden');
-        });
+            document.getElementById('rules').classList.remove('hidden');
+            document.getElementById('rulesPreview').textContent = getWordDisplay(revealedCount);
+        }
+        welcome.addEventListener('click', showRules);
+        welcome.addEventListener('touchstart', function(e) { e.preventDefault(); showRules(); });
     })();
 
+    // ---- Win screen hearts ----
+    (function() {
+        const container = document.getElementById('winHeartsContainer');
+        const emojis = ['\u2764\ufe0f', '\uD83D\uDC95', '\uD83D\uDC96', '\uD83D\uDC97', '\uD83D\uDC98', '\uD83D\uDC9D'];
+        for (let i = 0; i < 20; i++) {
+            const h = document.createElement('div');
+            h.className = 'heart';
+            h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            h.style.left = Math.random() * 100 + '%';
+            h.style.fontSize = (16 + Math.random() * 24) + 'px';
+            h.style.animationDuration = (4 + Math.random() * 6) + 's';
+            h.style.animationDelay = (Math.random() * 5) + 's';
+            container.appendChild(h);
+        }
+    })();
+
+    // ---- Game ----
     (function() {
         const canvas = document.getElementById('game');
         const ctx = canvas.getContext('2d');
         const overlay = document.getElementById('overlay');
         const overlayText = document.getElementById('overlayText');
+        const overlayWord = document.getElementById('overlayWord');
         const finalScore = document.getElementById('finalScore');
         const startBtn = document.getElementById('startBtn');
+        const rulesBtn = document.getElementById('rulesBtn');
 
-        // Responsive sizing
         const MAX_W = 400, MAX_H = 600;
         let W, H, scale;
 
@@ -258,7 +326,6 @@
         resize();
         window.addEventListener('resize', resize);
 
-        // Game constants (relative to scale)
         const s = () => scale;
         const GRAVITY = 0.45;
         const FLAP_FORCE = -7.5;
@@ -269,27 +336,10 @@
         const BIRD_SIZE = 20;
         const GROUND_H = 60;
 
-        // Game state
-        let bird, pipes, score, bestScore, gameState, frame, groundX;
-        bestScore = parseInt(localStorage.getItem('flappyBest') || '0');
-
-        // Colors
-        const SKY_TOP = '#4ec0ca';
-        const SKY_BOT = '#71c8d6';
-        const GROUND_COLOR = '#ded895';
-        const GROUND_DARK = '#d2b34a';
-        const PIPE_GREEN = '#74bf2e';
-        const PIPE_DARK = '#548a20';
-        const PIPE_BORDER = '#3b2d1e';
+        let bird, pipes, score, gameState, frame, groundX;
 
         function init() {
-            bird = {
-                x: W * 0.28,
-                y: H * 0.45,
-                vy: 0,
-                rotation: 0,
-                flapFrame: 0
-            };
+            bird = { x: W * 0.28, y: H * 0.45, vy: 0, rotation: 0, flapFrame: 0 };
             pipes = [];
             score = 0;
             frame = 0;
@@ -311,49 +361,37 @@
             const minY = 80 * s();
             const maxY = H - GROUND_H * s() - PIPE_GAP * s() - minY;
             const topH = minY + Math.random() * maxY;
-            pipes.push({
-                x: W + 10,
-                topH: topH,
-                scored: false
-            });
+            pipes.push({ x: W + 10, topH, scored: false });
+        }
+
+        function checkWin() {
+            if (revealedCount >= TOTAL_LETTERS) {
+                gameState = 'won';
+                document.getElementById('winWord').textContent = SECRET;
+                document.getElementById('winScreen').classList.remove('hidden');
+            }
         }
 
         function update() {
             if (gameState !== 'playing') return;
             frame++;
 
-            // Bird physics
             bird.vy += GRAVITY * s();
             bird.y += bird.vy;
 
-            // Bird rotation
-            if (bird.vy < 0) {
-                bird.rotation = Math.max(-0.5, bird.vy * 0.08);
-            } else {
-                bird.rotation = Math.min(1.2, bird.vy * 0.06);
-            }
+            if (bird.vy < 0) bird.rotation = Math.max(-0.5, bird.vy * 0.08);
+            else bird.rotation = Math.min(1.2, bird.vy * 0.06);
 
-            // Ground collision
             const groundY = H - GROUND_H * s();
             if (bird.y + BIRD_SIZE * s() > groundY) {
                 bird.y = groundY - BIRD_SIZE * s();
-                die();
-                return;
+                die(); return;
             }
+            if (bird.y < 0) { bird.y = 0; bird.vy = 0; }
 
-            // Ceiling
-            if (bird.y < 0) {
-                bird.y = 0;
-                bird.vy = 0;
-            }
+            if (frame % Math.floor(PIPE_SPAWN / (PIPE_SPEED * s())) === 0) spawnPipe();
 
-            // Pipes
-            if (frame % Math.floor(PIPE_SPAWN / (PIPE_SPEED * s())) === 0) {
-                spawnPipe();
-            }
-
-            const bx = bird.x;
-            const by = bird.y;
+            const bx = bird.x, by = bird.y;
             const bs = BIRD_SIZE * s();
             const pw = PIPE_WIDTH * s();
             const pg = PIPE_GAP * s();
@@ -362,233 +400,150 @@
                 const p = pipes[i];
                 p.x -= PIPE_SPEED * s();
 
-                // Remove off-screen
-                if (p.x + pw < 0) {
-                    pipes.splice(i, 1);
-                    continue;
-                }
+                if (p.x + pw < 0) { pipes.splice(i, 1); continue; }
 
-                // Score
                 if (!p.scored && p.x + pw < bx) {
                     p.scored = true;
                     score++;
+                    // Reveal a new letter
+                    if (revealedCount < TOTAL_LETTERS) {
+                        revealedCount++;
+                        localStorage.setItem('flappyRevealed', revealedCount);
+                        if (revealedCount >= TOTAL_LETTERS) {
+                            checkWin();
+                            return;
+                        }
+                    }
                 }
 
-                // Collision with hitbox margin
                 const margin = 3 * s();
                 if (bx + bs - margin > p.x && bx + margin < p.x + pw) {
                     if (by + margin < p.topH || by + bs - margin > p.topH + pg) {
-                        die();
-                        return;
+                        die(); return;
                     }
                 }
             }
 
-            // Ground scroll
             groundX -= PIPE_SPEED * s();
             if (groundX <= -24 * s()) groundX = 0;
         }
 
         function die() {
             gameState = 'dead';
-            if (score > bestScore) {
-                bestScore = score;
-                localStorage.setItem('flappyBest', bestScore);
-            }
             overlay.classList.remove('hidden');
             overlayText.textContent = 'Game Over';
-            finalScore.textContent = `Score: ${score}  |  Best: ${bestScore}`;
+            overlayWord.textContent = getWordDisplay(revealedCount);
+            const left = TOTAL_LETTERS - revealedCount;
+            finalScore.textContent = `+${score} | ` + (left > 0 ? `\u041e\u0441\u0442\u0430\u043b\u043e\u0441\u044c \u0431\u0443\u043a\u0432: ${left}` : '\u0412\u0441\u0435 \u0431\u0443\u043a\u0432\u044b \u043e\u0442\u043a\u0440\u044b\u0442\u044b!');
             finalScore.classList.remove('hidden');
-            startBtn.textContent = 'Заново';
+            startBtn.textContent = '\u0415\u0449\u0451 \u0440\u0430\u0437';
         }
 
-        // ---- Drawing ----
-
+        // Drawing
         function drawBackground() {
             const grd = ctx.createLinearGradient(0, 0, 0, H);
-            grd.addColorStop(0, SKY_TOP);
-            grd.addColorStop(1, SKY_BOT);
+            grd.addColorStop(0, '#4ec0ca');
+            grd.addColorStop(1, '#71c8d6');
             ctx.fillStyle = grd;
             ctx.fillRect(0, 0, W, H);
-
-            // Clouds
             ctx.fillStyle = 'rgba(255,255,255,0.6)';
-            drawCloud(50 * s(), 80 * s(), 40 * s());
-            drawCloud(200 * s(), 50 * s(), 30 * s());
-            drawCloud(320 * s(), 110 * s(), 35 * s());
+            drawCloud(50*s(), 80*s(), 40*s());
+            drawCloud(200*s(), 50*s(), 30*s());
+            drawCloud(320*s(), 110*s(), 35*s());
         }
-
         function drawCloud(x, y, r) {
             ctx.beginPath();
-            ctx.arc(x, y, r, 0, Math.PI * 2);
-            ctx.arc(x + r * 0.8, y - r * 0.3, r * 0.7, 0, Math.PI * 2);
-            ctx.arc(x + r * 1.4, y, r * 0.6, 0, Math.PI * 2);
+            ctx.arc(x, y, r, 0, Math.PI*2);
+            ctx.arc(x+r*0.8, y-r*0.3, r*0.7, 0, Math.PI*2);
+            ctx.arc(x+r*1.4, y, r*0.6, 0, Math.PI*2);
             ctx.fill();
         }
-
         function drawPipe(p) {
-            const pw = PIPE_WIDTH * s();
-            const pg = PIPE_GAP * s();
-            const capH = 26 * s();
-            const capExtra = 6 * s();
-            const borderW = 2 * s();
-
-            // Top pipe body
-            ctx.fillStyle = PIPE_GREEN;
+            const pw = PIPE_WIDTH*s(), pg = PIPE_GAP*s();
+            const capH = 26*s(), capExtra = 6*s(), borderW = 2*s();
+            ctx.fillStyle = '#74bf2e';
             ctx.fillRect(p.x, 0, pw, p.topH);
-            ctx.fillStyle = PIPE_DARK;
+            ctx.fillStyle = '#548a20';
             ctx.fillRect(p.x, 0, borderW, p.topH);
-            ctx.fillRect(p.x + pw - borderW, 0, borderW, p.topH);
-
-            // Top pipe cap
-            ctx.fillStyle = PIPE_GREEN;
-            ctx.fillRect(p.x - capExtra, p.topH - capH, pw + capExtra * 2, capH);
-            ctx.strokeStyle = PIPE_BORDER;
-            ctx.lineWidth = borderW;
-            ctx.strokeRect(p.x - capExtra, p.topH - capH, pw + capExtra * 2, capH);
-
-            // Highlight on top pipe
+            ctx.fillRect(p.x+pw-borderW, 0, borderW, p.topH);
+            ctx.fillStyle = '#74bf2e';
+            ctx.fillRect(p.x-capExtra, p.topH-capH, pw+capExtra*2, capH);
+            ctx.strokeStyle = '#3b2d1e'; ctx.lineWidth = borderW;
+            ctx.strokeRect(p.x-capExtra, p.topH-capH, pw+capExtra*2, capH);
             ctx.fillStyle = 'rgba(255,255,255,0.15)';
-            ctx.fillRect(p.x + 6 * s(), 0, 8 * s(), p.topH - capH);
-
-            // Bottom pipe body
-            const botY = p.topH + pg;
-            const botH = H - botY;
-            ctx.fillStyle = PIPE_GREEN;
+            ctx.fillRect(p.x+6*s(), 0, 8*s(), p.topH-capH);
+            const botY = p.topH+pg, botH = H-botY;
+            ctx.fillStyle = '#74bf2e';
             ctx.fillRect(p.x, botY, pw, botH);
-            ctx.fillStyle = PIPE_DARK;
+            ctx.fillStyle = '#548a20';
             ctx.fillRect(p.x, botY, borderW, botH);
-            ctx.fillRect(p.x + pw - borderW, botY, borderW, botH);
-
-            // Bottom pipe cap
-            ctx.fillStyle = PIPE_GREEN;
-            ctx.fillRect(p.x - capExtra, botY, pw + capExtra * 2, capH);
-            ctx.strokeStyle = PIPE_BORDER;
-            ctx.lineWidth = borderW;
-            ctx.strokeRect(p.x - capExtra, botY, pw + capExtra * 2, capH);
-
-            // Highlight on bottom pipe
+            ctx.fillRect(p.x+pw-borderW, botY, borderW, botH);
+            ctx.fillStyle = '#74bf2e';
+            ctx.fillRect(p.x-capExtra, botY, pw+capExtra*2, capH);
+            ctx.strokeStyle = '#3b2d1e'; ctx.lineWidth = borderW;
+            ctx.strokeRect(p.x-capExtra, botY, pw+capExtra*2, capH);
             ctx.fillStyle = 'rgba(255,255,255,0.15)';
-            ctx.fillRect(p.x + 6 * s(), botY + capH, 8 * s(), botH - capH);
+            ctx.fillRect(p.x+6*s(), botY+capH, 8*s(), botH-capH);
         }
-
         function drawBird() {
-            const bs = BIRD_SIZE * s();
-            const cx = bird.x + bs / 2;
-            const cy = bird.y + bs / 2;
-
-            ctx.save();
-            ctx.translate(cx, cy);
-            ctx.rotate(bird.rotation);
-
-            // Body
+            const bs = BIRD_SIZE*s();
+            const cx = bird.x+bs/2, cy = bird.y+bs/2;
+            ctx.save(); ctx.translate(cx, cy); ctx.rotate(bird.rotation);
             ctx.fillStyle = '#f8c53a';
-            ctx.beginPath();
-            ctx.ellipse(0, 0, bs * 0.65, bs * 0.5, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#543847';
-            ctx.lineWidth = 1.5 * s();
-            ctx.stroke();
-
-            // Belly
+            ctx.beginPath(); ctx.ellipse(0,0,bs*0.65,bs*0.5,0,0,Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#543847'; ctx.lineWidth = 1.5*s(); ctx.stroke();
             ctx.fillStyle = '#fae89d';
-            ctx.beginPath();
-            ctx.ellipse(bs * 0.05, bs * 0.15, bs * 0.35, bs * 0.3, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Wing
-            const wingFlap = Math.sin((frame - bird.flapFrame) * 0.5) * 0.2;
+            ctx.beginPath(); ctx.ellipse(bs*0.05,bs*0.15,bs*0.35,bs*0.3,0,0,Math.PI*2); ctx.fill();
+            const wingFlap = Math.sin((frame-bird.flapFrame)*0.5)*0.2;
             ctx.fillStyle = '#e8a43a';
-            ctx.beginPath();
-            ctx.ellipse(-bs * 0.1, bs * 0.05 + wingFlap * bs, bs * 0.35, bs * 0.22, -0.3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#543847';
-            ctx.lineWidth = 1 * s();
-            ctx.stroke();
-
-            // Eye (white)
+            ctx.beginPath(); ctx.ellipse(-bs*0.1,bs*0.05+wingFlap*bs,bs*0.35,bs*0.22,-0.3,0,Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#543847'; ctx.lineWidth = 1*s(); ctx.stroke();
             ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(bs * 0.22, -bs * 0.12, bs * 0.2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#543847';
-            ctx.lineWidth = 1 * s();
-            ctx.stroke();
-
-            // Eye (pupil)
+            ctx.beginPath(); ctx.arc(bs*0.22,-bs*0.12,bs*0.2,0,Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#543847'; ctx.lineWidth = 1*s(); ctx.stroke();
             ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(bs * 0.28, -bs * 0.12, bs * 0.09, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Beak
+            ctx.beginPath(); ctx.arc(bs*0.28,-bs*0.12,bs*0.09,0,Math.PI*2); ctx.fill();
             ctx.fillStyle = '#e87040';
-            ctx.beginPath();
-            ctx.moveTo(bs * 0.45, -bs * 0.02);
-            ctx.lineTo(bs * 0.8, bs * 0.06);
-            ctx.lineTo(bs * 0.45, bs * 0.15);
-            ctx.closePath();
-            ctx.fill();
-            ctx.strokeStyle = '#543847';
-            ctx.lineWidth = 1 * s();
-            ctx.stroke();
-
+            ctx.beginPath(); ctx.moveTo(bs*0.45,-bs*0.02); ctx.lineTo(bs*0.8,bs*0.06); ctx.lineTo(bs*0.45,bs*0.15); ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = '#543847'; ctx.lineWidth = 1*s(); ctx.stroke();
             ctx.restore();
         }
-
         function drawGround() {
-            const gH = GROUND_H * s();
-            const gY = H - gH;
-
-            ctx.fillStyle = GROUND_COLOR;
-            ctx.fillRect(0, gY, W, gH);
-
-            // Top stripe
-            ctx.fillStyle = GROUND_DARK;
-            ctx.fillRect(0, gY, W, 4 * s());
-
-            // Grass tufts
+            const gH = GROUND_H*s(), gY = H-gH;
+            ctx.fillStyle = '#ded895'; ctx.fillRect(0, gY, W, gH);
+            ctx.fillStyle = '#d2b34a'; ctx.fillRect(0, gY, W, 4*s());
             ctx.fillStyle = '#8bc34a';
-            const tW = 24 * s();
-            for (let x = groundX; x < W + tW; x += tW) {
-                ctx.beginPath();
-                ctx.moveTo(x, gY);
-                ctx.lineTo(x + tW * 0.5, gY - 6 * s());
-                ctx.lineTo(x + tW, gY);
-                ctx.fill();
-            }
-
-            // Dots pattern
-            ctx.fillStyle = '#c4a94a';
-            for (let x = groundX; x < W + 20; x += 20 * s()) {
-                for (let row = 0; row < 2; row++) {
-                    ctx.beginPath();
-                    ctx.arc(x + (row % 2) * 10 * s(), gY + 18 * s() + row * 18 * s(), 2 * s(), 0, Math.PI * 2);
-                    ctx.fill();
-                }
+            const tW = 24*s();
+            for (let x = groundX; x < W+tW; x += tW) {
+                ctx.beginPath(); ctx.moveTo(x, gY); ctx.lineTo(x+tW*0.5, gY-6*s()); ctx.lineTo(x+tW, gY); ctx.fill();
             }
         }
 
         function drawScore() {
             if (gameState !== 'playing') return;
             const text = String(score);
-            ctx.font = `bold ${32 * s()}px Arial`;
+            ctx.font = `bold ${32*s()}px Arial`;
             ctx.textAlign = 'center';
-
-            // Outline
-            ctx.strokeStyle = '#543847';
-            ctx.lineWidth = 4 * s();
-            ctx.strokeText(text, W / 2, 50 * s());
-
-            // Fill
+            ctx.strokeStyle = '#543847'; ctx.lineWidth = 4*s();
+            ctx.strokeText(text, W/2, 50*s());
             ctx.fillStyle = '#fff';
-            ctx.fillText(text, W / 2, 50 * s());
+            ctx.fillText(text, W/2, 50*s());
+        }
+
+        function drawWordBar() {
+            if (gameState !== 'playing') return;
+            const display = getWordDisplay(revealedCount);
+            ctx.font = `bold ${16*s()}px monospace`;
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'rgba(0,0,0,0.35)';
+            ctx.fillRect(0, H - GROUND_H*s() - 28*s(), W, 28*s());
+            ctx.fillStyle = '#FFD700';
+            ctx.fillText(display, W/2, H - GROUND_H*s() - 8*s());
         }
 
         function drawReadyHint() {
             if (gameState !== 'ready') return;
-            const bobY = Math.sin(Date.now() * 0.004) * 8 * s();
-            bird.y = H * 0.45 + bobY;
+            bird.y = H*0.45 + Math.sin(Date.now()*0.004)*8*s();
         }
 
         function draw() {
@@ -598,6 +553,7 @@
             drawReadyHint();
             drawBird();
             drawScore();
+            drawWordBar();
         }
 
         function loop() {
@@ -606,14 +562,12 @@
             requestAnimationFrame(loop);
         }
 
-        // ---- Input ----
-
+        // Input
         function handleInput(e) {
             e.preventDefault();
             if (gameState === 'dead') return;
             flap();
         }
-
         canvas.addEventListener('pointerdown', handleInput);
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' || e.code === 'ArrowUp') {
@@ -625,16 +579,27 @@
 
         startBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (revealedCount >= TOTAL_LETTERS) { checkWin(); return; }
             init();
             overlay.classList.add('hidden');
+            overlayWord.textContent = '';
+            finalScore.classList.add('hidden');
             gameState = 'ready';
+        });
+
+        rulesBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('rules').classList.add('hidden');
+            if (revealedCount >= TOTAL_LETTERS) { checkWin(); return; }
+            init();
+            overlayWord.textContent = getWordDisplay(revealedCount);
         });
 
         // Prevent scroll on mobile
         document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
-        // Start
         init();
+        overlayWord.textContent = getWordDisplay(revealedCount);
         loop();
     })();
     </script>
