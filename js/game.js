@@ -48,6 +48,8 @@
     let particles = [];
     let birdHue = 30; // random hue for the bird, set on each init
     let timeTheme = TIME_THEMES[1]; // default day
+    let spinAngle = 0;   // current spin rotation (radians)
+    let spinning = false; // is a spin in progress
 
     function hsl(h, sat, light) {
         return `hsl(${h}, ${sat}%, ${light}%)`;
@@ -136,6 +138,8 @@
         gameState = 'ready';
         birdHue = Math.floor(Math.random() * 360);
         timeTheme = TIME_THEMES[Math.floor(Math.random() * TIME_THEMES.length)];
+        spinAngle = 0;
+        spinning = false;
     }
 
     function flap() {
@@ -177,6 +181,19 @@
 
         if (bird.vy < 0) bird.rotation = Math.max(-0.5, bird.vy * 0.08);
         else bird.rotation = Math.min(1.2, bird.vy * 0.06);
+
+        // Random spin trick
+        if (!spinning && Math.random() < 0.003) {
+            spinning = true;
+            spinAngle = 0;
+        }
+        if (spinning) {
+            spinAngle += 0.25;
+            if (spinAngle >= Math.PI * 2) {
+                spinAngle = 0;
+                spinning = false;
+            }
+        }
 
         const groundY = H - GROUND_H * s();
         if (bird.y + BIRD_SIZE * s() > groundY) {
@@ -450,7 +467,7 @@
 
         ctx.save();
         ctx.translate(cx, cy);
-        ctx.rotate(bird.rotation * 0.6);
+        ctx.rotate(bird.rotation * 0.6 + spinAngle);
 
         const r = bs * 0.9; // base radius
 
