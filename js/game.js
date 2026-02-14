@@ -10,6 +10,7 @@
     const rulesBtn = document.getElementById('rulesBtn');
     const diffLabel = document.querySelector('.diff-label');
     const diffWrap = document.querySelector('.diff-wrap');
+    const complimentBtn = document.getElementById('complimentBtn');
 
     const MAX_W = 400, MAX_H = 600;
     let W, H, scale;
@@ -234,6 +235,7 @@
         gameState = 'dead';
         diffLabel.style.display = 'none';
         diffWrap.style.display = 'none';
+        complimentBtn.style.display = 'none';
         overlay.classList.remove('hidden');
         overlayText.textContent = 'Game Over';
         overlayWord.textContent = getWordDisplay();
@@ -719,6 +721,31 @@
             pointsPerLetter = newPPL;
             overlayWord.textContent = getWordDisplay();
         });
+    });
+
+    // Compliment mode toggle
+    complimentBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (gameMode === 'compliments') {
+            // Turn off
+            gameMode = 'normal';
+            complimentBtn.classList.remove('active');
+            diffLabel.style.display = '';
+            diffWrap.style.display = '';
+        } else {
+            // Turn on
+            gameMode = 'compliments';
+            complimentBtn.classList.add('active');
+            pointsPerLetter = 5;
+            // Reset difficulty buttons to easy
+            diffBtns.forEach(b => b.classList.remove('active'));
+            document.querySelector('.diff-btn.easy').classList.add('active');
+            // Hide difficulty
+            diffLabel.style.display = 'none';
+            diffWrap.style.display = 'none';
+        }
+        setupWord(pickRandomWord());
+        overlayWord.textContent = getWordDisplay();
     });
 
     // Prevent scroll on mobile
