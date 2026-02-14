@@ -186,6 +186,9 @@
         if (!spinning && Math.random() < 0.003) {
             spinning = true;
             spinAngle = 0;
+            const birdCx = bird.x + BIRD_SIZE * s() / 2;
+            const birdCy = bird.y + BIRD_SIZE * s() / 2;
+            spawnParticles(birdCx, birdCy, true);
         }
         if (spinning) {
             spinAngle += 0.25;
