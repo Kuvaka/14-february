@@ -97,6 +97,12 @@
             ctx.rotate(pt.rotation);
             const sz = pt.size * s() * (0.5 + pt.life * 0.5);
 
+            // Night glow on particles
+            if (timeTheme.name === 'night') {
+                ctx.shadowColor = pt.color;
+                ctx.shadowBlur = sz * 1.5;
+            }
+
             if (pt.type === 'heart') {
                 // Simple heart shape
                 ctx.fillStyle = pt.color;
@@ -108,7 +114,7 @@
                 // Sparkle: filled circle with glow
                 ctx.fillStyle = pt.color;
                 ctx.shadowColor = pt.color;
-                ctx.shadowBlur = sz * 0.8;
+                ctx.shadowBlur = timeTheme.name === 'night' ? sz * 2 : sz * 0.8;
                 ctx.beginPath();
                 ctx.arc(0, 0, sz * 0.4, 0, Math.PI * 2);
                 ctx.fill();
