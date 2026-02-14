@@ -50,6 +50,8 @@
     let timeTheme = TIME_THEMES[1]; // default day
     let spinAngle = 0;   // current spin rotation (radians)
     let spinning = false; // is a spin in progress
+    let pipeCount = 0;    // total pipes spawned (for section coloring)
+    let sectionHue = 0;   // current hue for pipe section
 
     function hsl(h, sat, light) {
         return `hsl(${h}, ${sat}%, ${light}%)`;
@@ -140,6 +142,8 @@
         timeTheme = TIME_THEMES[Math.floor(Math.random() * TIME_THEMES.length)];
         spinAngle = 0;
         spinning = false;
+        pipeCount = 0;
+        sectionHue = Math.floor(Math.random() * 360);
     }
 
     function flap() {
@@ -156,7 +160,11 @@
         const minY = 80 * s();
         const maxY = H - GROUND_H * s() - PIPE_GAP * s() - minY;
         const topH = minY + Math.random() * maxY;
-        pipes.push({ x: W + 10, topH, scored: false });
+        if (pipeCount % pointsPerLetter === 0) {
+            sectionHue = Math.floor(Math.random() * 360);
+        }
+        pipeCount++;
+        pipes.push({ x: W + 10, topH, scored: false, hue: sectionHue });
     }
 
     function showWordComplete() {
@@ -342,14 +350,14 @@
         ctx.arc(x+r*1.4, y, r*0.6, 0, Math.PI*2);
         ctx.fill();
     }
-    function drawVapeBody(x, y, w, h, flipped) {
-        // Main body - dark gradient
+    function drawVapeBody(x, y, w, h, flipped, pipeHue) {
+        // Main body - tinted gradient
         const grd = ctx.createLinearGradient(x, y, x + w, y);
-        grd.addColorStop(0, '#2a2a2e');
-        grd.addColorStop(0.3, '#3d3d42');
-        grd.addColorStop(0.5, '#4a4a50');
-        grd.addColorStop(0.7, '#3d3d42');
-        grd.addColorStop(1, '#2a2a2e');
+        grd.addColorStop(0, hsl(pipeHue, 20, 16));
+        grd.addColorStop(0.3, hsl(pipeHue, 18, 24));
+        grd.addColorStop(0.5, hsl(pipeHue, 16, 30));
+        grd.addColorStop(0.7, hsl(pipeHue, 18, 24));
+        grd.addColorStop(1, hsl(pipeHue, 20, 16));
         ctx.fillStyle = grd;
 
         const r = 8 * s();
@@ -411,17 +419,17 @@
         ctx.fillText('WAKA', x + w/2, textY);
     }
 
-    function drawMouthpiece(x, y, w, h, flipped) {
-        // Mouthpiece - tapered top piece
+    function drawMouthpiece(x, y, w, h, flipped, pipeHue) {
+        // Mouthpiece - tinted top piece
         const mpW = w * 0.6;
         const mpH = Math.min(18 * s(), h);
         const mpX = x + (w - mpW) / 2;
         const mpY = flipped ? y + h - mpH : y;
 
         const grd = ctx.createLinearGradient(mpX, mpY, mpX + mpW, mpY);
-        grd.addColorStop(0, '#1a1a1e');
-        grd.addColorStop(0.5, '#333338');
-        grd.addColorStop(1, '#1a1a1e');
+        grd.addColorStop(0, hsl(pipeHue, 15, 12));
+        grd.addColorStop(0.5, hsl(pipeHue, 12, 20));
+        grd.addColorStop(1, hsl(pipeHue, 15, 12));
         ctx.fillStyle = grd;
 
         ctx.beginPath();
@@ -432,13 +440,14 @@
     function drawPipe(p) {
         const pw = PIPE_WIDTH * s();
         const pg = PIPE_GAP * s();
+        const ph = p.hue || 0;
 
         // Top vape (flipped, mouthpiece pointing down)
         const topH = p.topH;
         if (topH > 20*s()) {
             const mpZone = Math.min(18*s(), topH * 0.15);
-            drawVapeBody(p.x, 0, pw, topH - mpZone, true);
-            drawMouthpiece(p.x, topH - mpZone, pw, mpZone, false);
+            drawVapeBody(p.x, 0, pw, topH - mpZone, true, ph);
+            drawMouthpiece(p.x, topH - mpZone, pw, mpZone, false, ph);
         }
 
         // Bottom vape (normal, mouthpiece pointing up)
@@ -446,8 +455,8 @@
         const botH = H - botY;
         if (botH > 20*s()) {
             const mpZone = Math.min(18*s(), botH * 0.15);
-            drawMouthpiece(p.x, botY, pw, mpZone, false);
-            drawVapeBody(p.x, botY + mpZone, pw, botH - mpZone, false);
+            drawMouthpiece(p.x, botY, pw, mpZone, false, ph);
+            drawVapeBody(p.x, botY + mpZone, pw, botH - mpZone, false, ph);
         }
     }
     function drawBird() {
