@@ -68,7 +68,7 @@
             font-family: monospace;
         }
 
-        #overlay button {
+        #overlay button:not(.diff-btn) {
             padding: 12px 32px; font-size: 20px;
             background: #e8a43a; color: #fff;
             border: 3px solid #543847; border-radius: 12px;
@@ -76,8 +76,36 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
             transition: transform 0.1s;
         }
-        #overlay button:hover { transform: scale(1.05); }
-        #overlay button:active { transform: scale(0.95); }
+        #overlay button:not(.diff-btn):hover { transform: scale(1.05); }
+        #overlay button:not(.diff-btn):active { transform: scale(0.95); }
+
+        /* Difficulty selector */
+        .diff-wrap {
+            display: flex; gap: 8px;
+            margin-top: 14px;
+        }
+        .diff-btn {
+            padding: 8px 14px; font-size: 14px; font-weight: bold;
+            color: #fff; border: 2px solid rgba(255,255,255,0.35);
+            border-radius: 10px; cursor: pointer;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            transition: transform 0.1s, border-color 0.15s, background 0.15s;
+            background: rgba(255,255,255,0.12);
+        }
+        .diff-btn:hover { transform: scale(1.06); }
+        .diff-btn:active { transform: scale(0.94); }
+        .diff-btn.active {
+            border-color: #FFD700;
+            background: rgba(255,215,0,0.25);
+        }
+        .diff-btn.easy   { color: #7fff7f; }
+        .diff-btn.medium { color: #ffe066; }
+        .diff-btn.hard   { color: #ff7f7f; }
+        .diff-label {
+            color: rgba(255,255,255,0.6); font-size: 13px;
+            margin-top: 12px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+        }
 
         /* ---- Full-screen screens ---- */
         .fullscreen {
@@ -173,17 +201,17 @@
         .rules-btn:hover { transform: scale(1.05); }
         .rules-btn:active { transform: scale(0.95); }
 
-        /* Win screen */
-        #winScreen {
+        /* Word complete screen */
+        #wordComplete {
             background: linear-gradient(135deg, #f093fb, #f5576c, #ff6b8a);
         }
-        .win-icon { font-size: 70px; margin-bottom: 16px; }
-        .win-title {
+        .wc-icon { font-size: 70px; margin-bottom: 16px; }
+        .wc-title {
             color: #FFD700; font-size: 30px; font-weight: bold;
             text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
             margin-bottom: 12px;
         }
-        .win-word {
+        .wc-word {
             font-family: monospace;
             font-size: 36px; font-weight: bold;
             letter-spacing: 6px; color: #fff;
@@ -191,7 +219,7 @@
             margin-bottom: 8px;
             animation: pulse 1.5s ease-in-out infinite;
         }
-        .win-sub {
+        .wc-stats {
             color: rgba(255,255,255,0.9); font-size: 18px;
             text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
             margin-bottom: 24px;
@@ -202,9 +230,9 @@
     <!-- Welcome screen -->
     <div id="welcome" class="fullscreen">
         <div class="hearts" id="heartsContainer"></div>
-        <div class="welcome-heart">&#10084;&#65039;</div>
-        <div class="welcome-text">&#128149; &#1051;&#1102;&#1073;&#1080;&#1084;&#1072;&#1103;, &#1087;&#1086;&#1079;&#1076;&#1088;&#1072;&#1074;&#1083;&#1103;&#1102; &#1089; 14 &#1092;&#1077;&#1074;&#1088;&#1072;&#1083;&#1103;! &#128149;</div>
-        <div class="welcome-tap">&#1045;&#1089;&#1083;&#1080; &#1093;&#1086;&#1095;&#1077;&#1096;&#1100; &#1089;&#1074;&#1086;&#1081; &#1087;&#1086;&#1076;&#1072;&#1088;&#1086;&#1082; &#8212; &#1090;&#1072;&#1087;&#1085;&#1080; &#128071;</div>
+        <div class="welcome-heart">&#127918;</div>
+        <div class="welcome-text">Flappy Bird: &#1059;&#1075;&#1072;&#1076;&#1072;&#1081; &#1089;&#1083;&#1086;&#1074;&#1086;!</div>
+        <div class="welcome-tap">&#1058;&#1072;&#1087;&#1085;&#1080; &#1095;&#1090;&#1086;&#1073;&#1099; &#1085;&#1072;&#1095;&#1072;&#1090;&#1100; &#128071;</div>
     </div>
 
     <!-- Rules screen -->
@@ -212,22 +240,22 @@
         <div class="rules-icon">&#127918;</div>
         <div class="rules-title">&#1050;&#1072;&#1082; &#1080;&#1075;&#1088;&#1072;&#1090;&#1100;?</div>
         <div class="rules-text">
-            &#1058;&#1077;&#1073;&#1077; &#1085;&#1091;&#1078;&#1085;&#1086; &#1086;&#1090;&#1082;&#1088;&#1099;&#1090;&#1100; &#1089;&#1083;&#1086;&#1074;&#1086;, &#1075;&#1076;&#1077; &#1089;&#1087;&#1088;&#1103;&#1090;&#1072;&#1085; &#1090;&#1074;&#1086;&#1081; &#1087;&#1086;&#1076;&#1072;&#1088;&#1086;&#1082;!<br><br>
-            &#1050;&#1072;&#1078;&#1076;&#1099;&#1077; 5 &#1086;&#1095;&#1082;&#1086;&#1074; &#1086;&#1090;&#1082;&#1088;&#1099;&#1074;&#1072;&#1102;&#1090; &#1089;&#1083;&#1091;&#1095;&#1072;&#1081;&#1085;&#1091;&#1102; &#1073;&#1091;&#1082;&#1074;&#1091;.<br>
-            &#1059;&#1087;&#1072;&#1083;&#1072; &#8212; &#1089;&#1095;&#1105;&#1090; &#1089;&#1073;&#1088;&#1072;&#1089;&#1099;&#1074;&#1072;&#1077;&#1090;&#1089;&#1103;, &#1085;&#1086; &#1073;&#1091;&#1082;&#1074;&#1099; &#1086;&#1089;&#1090;&#1072;&#1102;&#1090;&#1089;&#1103;!
+            &#1054;&#1090;&#1082;&#1088;&#1099;&#1074;&#1072;&#1081; &#1089;&#1083;&#1086;&#1074;&#1072; &#1086;&#1076;&#1085;&#1086; &#1079;&#1072; &#1076;&#1088;&#1091;&#1075;&#1080;&#1084;!<br><br>
+            &#1053;&#1072;&#1073;&#1080;&#1088;&#1072;&#1081; &#1086;&#1095;&#1082;&#1080; &#1095;&#1090;&#1086;&#1073;&#1099; &#1086;&#1090;&#1082;&#1088;&#1099;&#1090;&#1100; &#1073;&#1091;&#1082;&#1074;&#1099;.<br>
+            &#1059;&#1087;&#1072;&#1083; &#8212; &#1089;&#1095;&#1105;&#1090; &#1089;&#1073;&#1088;&#1072;&#1089;&#1099;&#1074;&#1072;&#1077;&#1090;&#1089;&#1103;, &#1085;&#1086; &#1073;&#1091;&#1082;&#1074;&#1099; &#1086;&#1089;&#1090;&#1072;&#1102;&#1090;&#1089;&#1103;!
         </div>
-        <div class="rules-word-preview">? ? ? ? ?&nbsp; &nbsp;? ? ? ? ?</div>
+        <div class="rules-word-preview" id="rulesWordPreview"></div>
         <button class="rules-btn" id="rulesBtn">&#1053;&#1072;&#1095;&#1072;&#1090;&#1100;! &#128293;</button>
     </div>
 
-    <!-- Win screen -->
-    <div id="winScreen" class="fullscreen hidden">
-        <div class="hearts" id="winHeartsContainer"></div>
-        <div class="win-icon">&#127881;&#127873;&#127881;</div>
-        <div class="win-title">&#1058;&#1099; &#1086;&#1090;&#1082;&#1088;&#1099;&#1083;&#1072; &#1089;&#1083;&#1086;&#1074;&#1086;!</div>
-        <div class="win-word" id="winWord"></div>
-        <div class="win-sub">&#1048;&#1076;&#1080; &#1079;&#1072; &#1087;&#1086;&#1076;&#1072;&#1088;&#1082;&#1086;&#1084;! &#128149;</div>
-        <button class="rules-btn" id="resetBtn" style="margin-top:16px;font-size:16px;padding:10px 24px;background:#764ba2;">&#1057;&#1073;&#1088;&#1086;&#1089;&#1080;&#1090;&#1100; &#1080; &#1080;&#1075;&#1088;&#1072;&#1090;&#1100; &#1079;&#1072;&#1085;&#1086;&#1074;&#1086;</button>
+    <!-- Word complete screen -->
+    <div id="wordComplete" class="fullscreen hidden">
+        <div class="hearts" id="wcHeartsContainer"></div>
+        <div class="wc-icon">&#127881;&#11088;&#127881;</div>
+        <div class="wc-title">&#1057;&#1083;&#1086;&#1074;&#1086; &#1086;&#1090;&#1082;&#1088;&#1099;&#1090;&#1086;!</div>
+        <div class="wc-word" id="wcWord"></div>
+        <div class="wc-stats" id="wcStats"></div>
+        <button class="rules-btn" id="nextWordBtn">&#1057;&#1083;&#1077;&#1076;&#1091;&#1102;&#1097;&#1077;&#1077; &#1089;&#1083;&#1086;&#1074;&#1086; &#128640;</button>
     </div>
 
     <!-- Game -->
@@ -239,58 +267,70 @@
             <div class="word-display" id="overlayWord"></div>
             <div class="score-display hidden" id="finalScore"></div>
             <button id="startBtn">&#1048;&#1075;&#1088;&#1072;&#1090;&#1100;</button>
+            <div class="diff-label">&#1057;&#1083;&#1086;&#1078;&#1085;&#1086;&#1089;&#1090;&#1100;:</div>
+            <div class="diff-wrap">
+                <button class="diff-btn easy active" data-diff="5">&#1051;&#1105;&#1075;&#1082;&#1086;</button>
+                <button class="diff-btn medium" data-diff="10">&#1057;&#1088;&#1077;&#1076;&#1085;&#1077;</button>
+                <button class="diff-btn hard" data-diff="15">&#1058;&#1103;&#1078;&#1077;&#1083;&#1086;</button>
+            </div>
         </div>
     </div>
 
     <script>
-    // Clear old version keys
-    localStorage.removeItem('flappyRevealed');
-    localStorage.removeItem('flappyBest');
+    // ---- Word list ----
+    const WORDS = [
+        'КОШКА', 'СОБАКА', 'СОЛНЦЕ', 'ДЕРЕВО', 'ОБЛАКО', 'РАКЕТА', 'ЗВЕЗДА', 'МЕДВЕДЬ',
+        'БАБОЧКА', 'РАДУГА', 'МОРОЗ', 'ОКЕАН', 'ДОЖДЬ', 'ВЕТЕР', 'ЛУНА', 'ОГОНЬ',
+        'ГОРЫ', 'РЕКА', 'ЗАМОК', 'РЫЦАРЬ', 'ДРАКОН', 'ПРИНЦ', 'КНИГА', 'МУЗЫКА',
+        'ТАНЕЦ', 'ПИРОГ', 'КОФЕ', 'ЗАКАТ', 'РАССВЕТ', 'СКАЗКА', 'МЕЧТА', 'УДАЧА',
+        'ЦВЕТОК', 'ФОНАРЬ', 'МАЯК', 'ПЕСНЯ', 'ИСКРА', 'ВУЛКАН', 'КОМЕТА', 'КОМПАС',
+        'МОЛНИЯ', 'ТАЙНА', 'ПЛАМЯ', 'НОЧЬ', 'УТРО', 'ВЕСНА', 'ЛЕТО', 'ОСЕНЬ',
+        'ЗИМА', 'МЕТЕЛЬ', 'РУЧЕЙ', 'ОСТРОВ', 'ВОЛНА', 'ПАРУС', 'ШТОРМ', 'НЕБО',
+        'ПОЕЗД', 'БАЛКОН', 'ФАКЕЛ', 'РЫБКА', 'ПТИЦА', 'ПИНГВИН', 'ЖИРАФ', 'ТИГР',
+        'ПИРАТ', 'РОБОТ', 'АЛМАЗ', 'МАГИЯ', 'ЗЕЛЬЕ', 'ПОРТАЛ', 'КОСМОС', 'ПЛАНЕТА',
+        'ГАЛАКТИКА', 'ЗАГАДКА', 'ЧУДО', 'ПОБЕДА', 'ГЕРОЙ', 'РЕКОРД', 'ФИНИШ', 'СТАРТ'
+    ];
 
-    // Version-based cache reset
-    const CACHE_VERSION = 2;
-    if (localStorage.getItem('flappyCacheVersion') !== String(CACHE_VERSION)) {
-        localStorage.removeItem('flappyRevealOrder');
-        localStorage.removeItem('flappyRevealedSet');
-        localStorage.setItem('flappyCacheVersion', String(CACHE_VERSION));
+    function pickRandomWord() {
+        return WORDS[Math.floor(Math.random() * WORDS.length)];
     }
 
-    // ---- Secret word ----
-    const SECRET = 'БЕЛЫЕ ШТАНЫ';
-    // Only actual letters (no spaces)
-    const LETTER_INDICES = []; // indices of letters in SECRET (excluding spaces)
-    SECRET.split('').forEach((ch, i) => { if (ch !== ' ') LETTER_INDICES.push(i); });
-    const TOTAL_LETTERS = LETTER_INDICES.length; // 10
-    const POINTS_PER_LETTER = 5;
+    // ---- Difficulty & current word state ----
+    let pointsPerLetter = 5;
+    let currentWord = pickRandomWord();
+    let letterIndices = [];
+    let totalLetters = 0;
+    let revealOrder = [];
+    let revealedSet = new Set();
+    let revealedCount = 0;
+    let wordsCompleted = 0;
+    let bestWords = parseInt(localStorage.getItem('flappyBestWords') || '0');
 
-    // Reveal order: shuffled indices, persistent across sessions
-    let revealOrder = JSON.parse(localStorage.getItem('flappyRevealOrder') || 'null');
-    if (!revealOrder || revealOrder.length !== TOTAL_LETTERS) {
-        revealOrder = [...LETTER_INDICES];
+    function setupWord(word) {
+        currentWord = word;
+        letterIndices = [];
+        word.split('').forEach((ch, i) => { if (ch !== ' ') letterIndices.push(i); });
+        totalLetters = letterIndices.length;
+        revealOrder = [...letterIndices];
         for (let i = revealOrder.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [revealOrder[i], revealOrder[j]] = [revealOrder[j], revealOrder[i]];
         }
-        localStorage.setItem('flappyRevealOrder', JSON.stringify(revealOrder));
+        revealedSet = new Set();
+        revealedCount = 0;
     }
 
-    // Set of revealed positions in SECRET
-    let revealedSet = new Set(JSON.parse(localStorage.getItem('flappyRevealedSet') || '[]'));
-    let revealedCount = revealedSet.size;
-
-    function saveRevealed() {
-        localStorage.setItem('flappyRevealedSet', JSON.stringify([...revealedSet]));
-    }
+    setupWord(currentWord);
 
     function getWordDisplay() {
-        return SECRET.split('').map((ch, i) => {
+        return currentWord.split('').map((ch, i) => {
             if (ch === ' ') return '  ';
             return revealedSet.has(i) ? ch : '_';
         }).join(' ');
     }
 
     function getNextThreshold() {
-        return (revealedCount + 1) * POINTS_PER_LETTER;
+        return (revealedCount + 1) * pointsPerLetter;
     }
 
     // ---- Welcome screen ----
@@ -317,10 +357,10 @@
         welcome.addEventListener('touchstart', function(e) { e.preventDefault(); showRules(); });
     })();
 
-    // ---- Win screen hearts ----
+    // ---- Word complete screen stars ----
     (function() {
-        const container = document.getElementById('winHeartsContainer');
-        const emojis = ['\u2764\ufe0f', '\uD83D\uDC95', '\uD83D\uDC96', '\uD83D\uDC97', '\uD83D\uDC98', '\uD83D\uDC9D'];
+        const container = document.getElementById('wcHeartsContainer');
+        const emojis = ['\u2B50', '\uD83C\uDF1F', '\u2728', '\uD83D\uDCAB', '\uD83C\uDF89', '\uD83C\uDF8A'];
         for (let i = 0; i < 20; i++) {
             const h = document.createElement('div');
             h.className = 'heart';
@@ -371,6 +411,11 @@
 
         let bird, pipes, score, gameState, frame, groundX;
         let particles = [];
+        let birdHue = 30; // random hue for the bird, set on each init
+
+        function hsl(h, sat, light) {
+            return `hsl(${h}, ${sat}%, ${light}%)`;
+        }
 
         function spawnParticles(x, y, isLetter) {
             const count = isLetter ? 24 : 12;
@@ -447,6 +492,7 @@
             frame = 0;
             groundX = 0;
             gameState = 'ready';
+            birdHue = Math.floor(Math.random() * 360);
         }
 
         function flap() {
@@ -466,12 +512,17 @@
             pipes.push({ x: W + 10, topH, scored: false });
         }
 
-        function checkWin() {
-            if (revealedCount >= TOTAL_LETTERS) {
-                gameState = 'won';
-                document.getElementById('winWord').textContent = SECRET;
-                document.getElementById('winScreen').classList.remove('hidden');
+        function showWordComplete() {
+            gameState = 'wordComplete';
+            wordsCompleted++;
+            if (wordsCompleted > bestWords) {
+                bestWords = wordsCompleted;
+                localStorage.setItem('flappyBestWords', String(bestWords));
             }
+            document.getElementById('wcWord').textContent = currentWord;
+            document.getElementById('wcStats').textContent =
+                '\u0421\u043b\u043e\u0432: ' + wordsCompleted + ' | \u0420\u0435\u043a\u043e\u0440\u0434: ' + bestWords;
+            document.getElementById('wordComplete').classList.remove('hidden');
         }
 
         function update() {
@@ -511,14 +562,13 @@
                     const birdCy = bird.y + bs / 2;
                     spawnParticles(birdCx, birdCy, false);
                     // Reveal a letter every 5 points
-                    if (revealedCount < TOTAL_LETTERS && score === getNextThreshold()) {
+                    if (revealedCount < totalLetters && score === getNextThreshold()) {
                         spawnParticles(birdCx, birdCy, true);
                         const pos = revealOrder[revealedCount];
                         revealedSet.add(pos);
                         revealedCount = revealedSet.size;
-                        saveRevealed();
-                        if (revealedCount >= TOTAL_LETTERS) {
-                            checkWin();
+                        if (revealedCount >= totalLetters) {
+                            showWordComplete();
                             return;
                         }
                     }
@@ -543,14 +593,18 @@
             overlay.classList.remove('hidden');
             overlayText.textContent = 'Game Over';
             overlayWord.textContent = getWordDisplay();
-            const left = TOTAL_LETTERS - revealedCount;
+            const left = totalLetters - revealedCount;
             if (left > 0) {
-                finalScore.textContent = `\u0421\u0447\u0451\u0442: ${score} | \u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0430\u044f \u0431\u0443\u043a\u0432\u0430: ${getNextThreshold()} \u043e\u0447\u043a\u043e\u0432`;
+                finalScore.textContent = '\u0421\u0447\u0451\u0442: ' + score + ' | \u0421\u043b\u0435\u0434. \u0431\u0443\u043a\u0432\u0430: ' + getNextThreshold() + ' \u043e\u0447\u043a\u043e\u0432';
             } else {
                 finalScore.textContent = '\u0412\u0441\u0435 \u0431\u0443\u043a\u0432\u044b \u043e\u0442\u043a\u0440\u044b\u0442\u044b!';
             }
             finalScore.classList.remove('hidden');
-            startBtn.textContent = '\u0415\u0449\u0451 \u0440\u0430\u0437';
+            if (wordsCompleted > 0) {
+                startBtn.textContent = '\u0415\u0449\u0451 \u0440\u0430\u0437 (\u0441\u043b\u043e\u0432: ' + wordsCompleted + ')';
+            } else {
+                startBtn.textContent = '\u0415\u0449\u0451 \u0440\u0430\u0437';
+            }
         }
 
         // Drawing
@@ -672,55 +726,61 @@
 
             const r = bs * 0.9; // base radius
 
+            // Bird colors from random hue
+            const bodyColor = hsl(birdHue, 60, 88);
+            const puffColor = hsl(birdHue, 50, 82);
+            const headPuffColor = hsl(birdHue, 45, 92);
+            const earColor = hsl(birdHue, 55, 80);
+
             // --- Fluffy body (behind head) ---
-            ctx.fillStyle = '#faf0e6';
+            ctx.fillStyle = bodyColor;
             ctx.beginPath();
             ctx.ellipse(0, r * 0.35, r * 0.65, r * 0.55, 0, 0, Math.PI * 2);
             ctx.fill();
 
             // Body fluff puffs
-            ctx.fillStyle = '#f5e6d3';
+            ctx.fillStyle = puffColor;
             const bodyPuffs = [[-r*0.35, r*0.2, r*0.28], [r*0.3, r*0.25, r*0.25], [0, r*0.55, r*0.3]];
             for (const [px, py, pr] of bodyPuffs) {
                 ctx.beginPath(); ctx.arc(px, py, pr, 0, Math.PI * 2); ctx.fill();
             }
 
             // --- Tail (small fluff) ---
-            ctx.fillStyle = '#faf0e6';
+            ctx.fillStyle = bodyColor;
             ctx.beginPath();
             ctx.arc(-r * 0.6, r * 0.1, r * 0.22, 0, Math.PI * 2);
             ctx.fill();
 
             // --- Floppy ears ---
             // Left ear
-            ctx.fillStyle = '#f0d9c1';
+            ctx.fillStyle = earColor;
             ctx.beginPath();
             ctx.ellipse(-r * 0.55, -r * 0.1, r * 0.22, r * 0.4, 0.3, 0, Math.PI * 2);
             ctx.fill();
             // Ear fluff
-            ctx.fillStyle = '#faf0e6';
+            ctx.fillStyle = bodyColor;
             ctx.beginPath();
             ctx.arc(-r * 0.48, -r * 0.2, r * 0.12, 0, Math.PI * 2);
             ctx.fill();
 
             // Right ear
-            ctx.fillStyle = '#f0d9c1';
+            ctx.fillStyle = earColor;
             ctx.beginPath();
             ctx.ellipse(r * 0.55, -r * 0.1, r * 0.22, r * 0.4, -0.3, 0, Math.PI * 2);
             ctx.fill();
-            ctx.fillStyle = '#faf0e6';
+            ctx.fillStyle = bodyColor;
             ctx.beginPath();
             ctx.arc(r * 0.48, -r * 0.2, r * 0.12, 0, Math.PI * 2);
             ctx.fill();
 
             // --- Head (fluffy circle) ---
-            ctx.fillStyle = '#faf0e6';
+            ctx.fillStyle = bodyColor;
             ctx.beginPath();
             ctx.arc(0, -r * 0.1, r * 0.55, 0, Math.PI * 2);
             ctx.fill();
 
             // Fluffy puffs around head
-            ctx.fillStyle = '#fff5eb';
+            ctx.fillStyle = headPuffColor;
             const puffs = [
                 [-r*0.35, -r*0.35, r*0.2],
                 [r*0.35, -r*0.35, r*0.2],
@@ -836,11 +896,11 @@
             ctx.fillText(display, W/2, barY + 16*s());
 
             // Next letter hint
-            if (revealedCount < TOTAL_LETTERS) {
+            if (revealedCount < totalLetters) {
                 const next = getNextThreshold();
                 ctx.font = `${11*s()}px Arial`;
                 ctx.fillStyle = 'rgba(255,255,255,0.7)';
-                ctx.fillText(`\u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0430\u044f \u0431\u0443\u043a\u0432\u0430: ${next} \u043e\u0447\u043a\u043e\u0432`, W/2, barY + 32*s());
+                ctx.fillText('\u0421\u043b\u0435\u0434. \u0431\u0443\u043a\u0432\u0430: ' + next + ' \u043e\u0447\u043a\u043e\u0432 | \u0421\u043b\u043e\u0432: ' + wordsCompleted, W/2, barY + 32*s());
             }
         }
 
@@ -883,7 +943,6 @@
 
         startBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (revealedCount >= TOTAL_LETTERS) { checkWin(); return; }
             init();
             overlay.classList.add('hidden');
             overlayWord.textContent = '';
@@ -894,20 +953,42 @@
         rulesBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             document.getElementById('rules').classList.add('hidden');
-            if (revealedCount >= TOTAL_LETTERS) { checkWin(); return; }
             init();
             overlayWord.textContent = getWordDisplay();
         });
 
-        document.getElementById('resetBtn').addEventListener('click', (e) => {
+        document.getElementById('nextWordBtn').addEventListener('click', (e) => {
             e.stopPropagation();
-            localStorage.removeItem('flappyRevealOrder');
-            localStorage.removeItem('flappyRevealedSet');
-            location.reload();
+            document.getElementById('wordComplete').classList.add('hidden');
+            setupWord(pickRandomWord());
+            init();
+            overlayWord.textContent = getWordDisplay();
+        });
+
+        // Difficulty buttons
+        const diffBtns = document.querySelectorAll('.diff-btn');
+        diffBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const newPPL = parseInt(btn.dataset.diff);
+                if (newPPL === pointsPerLetter) return;
+                // Switch active style
+                diffBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                // If letters were already revealed, reset word
+                if (revealedCount > 0) {
+                    setupWord(pickRandomWord());
+                }
+                pointsPerLetter = newPPL;
+                overlayWord.textContent = getWordDisplay();
+            });
         });
 
         // Prevent scroll on mobile
         document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+
+        // Set rules preview
+        document.getElementById('rulesWordPreview').textContent = getWordDisplay();
 
         init();
         overlayWord.textContent = getWordDisplay();
