@@ -381,18 +381,31 @@
         ctx.fill();
 
         // Screen glow
+        const isNight = timeTheme.name === 'night';
+        if (isNight) {
+            ctx.shadowColor = '#00e5ff';
+            ctx.shadowBlur = 12 * s();
+        }
         ctx.fillStyle = '#00e5ff';
-        ctx.globalAlpha = 0.6;
+        ctx.globalAlpha = isNight ? 0.8 : 0.6;
         ctx.beginPath();
         ctx.roundRect(scrX + 2*s(), scrY + 2*s(), scrW - 4*s(), scrH - 4*s(), 2*s());
         ctx.fill();
         ctx.globalAlpha = 1;
+        if (isNight) {
+            ctx.shadowBlur = 0;
+            ctx.shadowColor = 'transparent';
+        }
 
         // Animated cells on screen
         ctx.save();
         ctx.beginPath();
         ctx.roundRect(scrX + 2*s(), scrY + 2*s(), scrW - 4*s(), scrH - 4*s(), 2*s());
         ctx.clip();
+        if (isNight) {
+            ctx.shadowColor = 'rgba(0, 255, 136, 0.9)';
+            ctx.shadowBlur = 6 * s();
+        }
         const cellS = 4 * s();
         const pad = 2 * s();
         const cols = Math.floor((scrW - 4*s()) / cellS);
@@ -403,7 +416,7 @@
                 const seed = (col * 7 + row * 13 + Math.floor(x)) * 0.1;
                 const flicker = Math.sin(t + seed * 3.7) * Math.cos(t * 0.7 + seed * 2.3);
                 if (flicker > 0.1) {
-                    const bright = 0.3 + flicker * 0.7;
+                    const bright = isNight ? 0.5 + flicker * 0.5 : 0.3 + flicker * 0.7;
                     ctx.fillStyle = `rgba(0, 255, 136, ${bright})`;
                     ctx.fillRect(scrX + pad + col * cellS, scrY + pad + row * cellS, cellS - 1*s(), cellS - 1*s());
                 }
