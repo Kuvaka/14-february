@@ -339,9 +339,28 @@
         ctx.fill();
         ctx.globalAlpha = 1;
 
-        // Battery bar on screen
-        ctx.fillStyle = '#00ff88';
-        ctx.fillRect(scrX + 4*s(), scrY + scrH * 0.35, (scrW - 8*s()) * 0.7, scrH * 0.3);
+        // Animated cells on screen
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(scrX + 2*s(), scrY + 2*s(), scrW - 4*s(), scrH - 4*s(), 2*s());
+        ctx.clip();
+        const cellS = 4 * s();
+        const pad = 2 * s();
+        const cols = Math.floor((scrW - 4*s()) / cellS);
+        const rows = Math.floor((scrH - 4*s()) / cellS);
+        const t = Date.now() * 0.003;
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const seed = (col * 7 + row * 13 + Math.floor(x)) * 0.1;
+                const flicker = Math.sin(t + seed * 3.7) * Math.cos(t * 0.7 + seed * 2.3);
+                if (flicker > 0.1) {
+                    const bright = 0.3 + flicker * 0.7;
+                    ctx.fillStyle = `rgba(0, 255, 136, ${bright})`;
+                    ctx.fillRect(scrX + pad + col * cellS, scrY + pad + row * cellS, cellS - 1*s(), cellS - 1*s());
+                }
+            }
+        }
+        ctx.restore();
 
         // WAKA text
         ctx.fillStyle = 'rgba(255,255,255,0.25)';
