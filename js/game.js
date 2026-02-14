@@ -260,15 +260,28 @@
         ctx.fillStyle = grd;
         ctx.fillRect(0, 0, W, H);
 
-        // Stars for night
+        // Stars for night — twinkling
         if (t.name === 'night') {
-            ctx.fillStyle = 'rgba(255,255,255,0.7)';
-            const stars = [[30,40,1.5],[80,20,1],[150,60,2],[200,30,1.2],[260,15,1.8],[310,50,1],[350,25,1.5],[120,80,1],[370,70,1.3],[55,100,1]];
-            for (const [sx,sy,sr] of stars) {
+            const now = Date.now() * 0.001;
+            const stars = [
+                [30,40,1.5,0.7],[80,20,1,1.3],[150,60,2,2.1],[200,30,1.2,0.4],[260,15,1.8,3.0],
+                [310,50,1,1.8],[350,25,1.5,0.9],[120,80,1,2.5],[370,70,1.3,1.1],[55,100,1,3.5],
+                [170,25,1.1,0.2],[95,55,1.7,2.8],[280,40,1.4,1.6],[390,90,1,0.6],[45,70,1.6,2.2],
+                [230,10,1.3,3.2],[140,95,0.9,1.0],[320,75,1.8,0.1],[185,42,1.2,2.6],[75,110,1.5,1.9]
+            ];
+            for (const [sx, sy, sr, phase] of stars) {
+                const twinkle = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(now * (1.5 + phase * 0.3) + phase * 5));
+                ctx.globalAlpha = twinkle;
+                ctx.fillStyle = '#fff';
+                ctx.shadowColor = '#fff';
+                ctx.shadowBlur = sr * 3 * s();
                 ctx.beginPath();
                 ctx.arc(sx*s(), sy*s(), sr*s(), 0, Math.PI*2);
                 ctx.fill();
             }
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 0;
+            ctx.shadowColor = 'transparent';
         }
 
         // Morning sun
