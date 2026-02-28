@@ -1,5 +1,5 @@
-// ---- 8-bit Music ----
-var startMusic, stopMusic;
+// ---- 8-bit Music & SFX ----
+var startMusic, stopMusic, sfxFlap, sfxBark, sfxHeart;
 (function() {
     var ctx, melodyOsc, bassOsc, melodyGain, bassGain, playing = false, timer;
 
@@ -67,5 +67,47 @@ var startMusic, stopMusic;
         try { melodyOsc && melodyOsc.stop(); } catch(e) {}
         try { bassOsc && bassOsc.stop(); } catch(e) {}
         melodyOsc = bassOsc = null;
+    };
+
+    // Short blip on tap
+    sfxFlap = function() {
+        ensureCtx();
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'square'; o.connect(g); g.connect(ctx.destination);
+        var t = ctx.currentTime;
+        o.frequency.setValueAtTime(600, t);
+        o.frequency.linearRampToValueAtTime(900, t + 0.06);
+        g.gain.setValueAtTime(0.08, t);
+        g.gain.linearRampToValueAtTime(0, t + 0.08);
+        o.start(t); o.stop(t + 0.08);
+    };
+
+    // 8-bit bark — two short descending tones
+    sfxBark = function() {
+        ensureCtx();
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'square'; o.connect(g); g.connect(ctx.destination);
+        var t = ctx.currentTime;
+        o.frequency.setValueAtTime(350, t);
+        o.frequency.setValueAtTime(250, t + 0.08);
+        g.gain.setValueAtTime(0.1, t);
+        g.gain.setValueAtTime(0.12, t + 0.08);
+        g.gain.linearRampToValueAtTime(0, t + 0.2);
+        o.start(t); o.stop(t + 0.2);
+    };
+
+    // Sparkle chime on heart/letter reveal
+    sfxHeart = function() {
+        ensureCtx();
+        var notes = [784, 988, 1175], dur = 0.07;
+        for (var i = 0; i < notes.length; i++) {
+            var o = ctx.createOscillator(), g = ctx.createGain();
+            o.type = 'square'; o.connect(g); g.connect(ctx.destination);
+            var t = ctx.currentTime + i * dur;
+            o.frequency.setValueAtTime(notes[i], t);
+            g.gain.setValueAtTime(0.07, t);
+            g.gain.linearRampToValueAtTime(0, t + 0.12);
+            o.start(t); o.stop(t + 0.12);
+        }
     };
 })();

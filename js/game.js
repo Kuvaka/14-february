@@ -55,6 +55,13 @@
     let spinning = false; // is a spin in progress
     let pipeCount = 0;    // total pipes spawned (for section coloring)
     let sectionHue = 0;   // current hue for pipe section
+    var clouds = [
+        { x: 50, y: 80, r: 40, speed: 0.3 },
+        { x: 200, y: 50, r: 30, speed: 0.2 },
+        { x: 320, y: 110, r: 35, speed: 0.25 },
+        { x: -60, y: 65, r: 32, speed: 0.15 },
+        { x: 140, y: 130, r: 28, speed: 0.35 }
+    ];
 
     function hsl(h, sat, light) {
         return `hsl(${h}, ${sat}%, ${light}%)`;
@@ -153,6 +160,7 @@
         }
         bird.vy = FLAP_FORCE * s();
         bird.flapFrame = frame;
+        sfxFlap();
     }
 
     function spawnPipe() {
@@ -190,13 +198,14 @@
         if (bird.vy < 0) bird.rotation = Math.max(-0.5, bird.vy * 0.08);
         else bird.rotation = Math.min(1.2, bird.vy * 0.06);
 
-        // Random spin trick
+        // Random spin trick + bark
         if (!spinning && Math.random() < 0.003) {
             spinning = true;
             spinAngle = 0;
             const birdCx = bird.x + BIRD_SIZE * s() / 2;
             const birdCy = bird.y + BIRD_SIZE * s() / 2;
             spawnParticles(birdCx, birdCy, true);
+            sfxBark();
         }
         if (spinning) {
             spinAngle += 0.25;
@@ -235,6 +244,7 @@
                 // Reveal a letter every 5 points
                 if (revealedCount < totalLetters && score === getNextThreshold()) {
                     spawnParticles(birdCx, birdCy, true);
+                    sfxHeart();
                     const pos = revealOrder[revealedCount];
                     revealedSet.add(pos);
                     revealedCount = revealedSet.size;
@@ -344,9 +354,12 @@
         }
 
         ctx.fillStyle = t.cloud;
-        drawCloud(50*s(), 80*s(), 40*s());
-        drawCloud(200*s(), 50*s(), 30*s());
-        drawCloud(320*s(), 110*s(), 35*s());
+        for (var i = 0; i < clouds.length; i++) {
+            var c = clouds[i];
+            c.x += c.speed;
+            if (c.x - c.r * 2 > MAX_W) c.x = -c.r * 2;
+            drawCloud(c.x * s(), c.y * s(), c.r * s());
+        }
     }
     function drawCloud(x, y, r) {
         ctx.beginPath();
