@@ -13,16 +13,19 @@
     const complimentBtn = document.getElementById('complimentBtn');
 
     const MAX_W = 400, MAX_H = 600;
-    let W, H, scale;
+    let W, H, scale, dpr = 1;
 
     function resize() {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
-        scale = Math.min(vw / MAX_W, vh / MAX_H, 1);
+        dpr = window.devicePixelRatio || 1;
+        scale = Math.min(vw / MAX_W, vh / MAX_H);
         W = Math.floor(MAX_W * scale);
         H = Math.floor(MAX_H * scale);
-        canvas.width = W;
-        canvas.height = H;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        canvas.width = Math.floor(W * dpr);
+        canvas.height = Math.floor(H * dpr);
     }
     resize();
     window.addEventListener('resize', resize);
@@ -691,6 +694,7 @@
     }
 
     function draw() {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         drawBackground();
         pipes.forEach(drawPipe);
         drawGround();
