@@ -149,6 +149,7 @@
         if (gameState === 'ready') {
             gameState = 'playing';
             overlay.classList.add('hidden');
+            startMusic();
         }
         bird.vy = FLAP_FORCE * s();
         bird.flapFrame = frame;
@@ -166,6 +167,7 @@
     }
 
     function showWordComplete() {
+        stopMusic();
         gameState = 'wordComplete';
         wordsCompleted++;
         if (wordsCompleted > bestWords) {
@@ -258,6 +260,7 @@
     }
 
     function die() {
+        stopMusic();
         gameState = 'dead';
         diffLabel.style.display = 'none';
         diffWrap.style.display = 'none';
