@@ -18,7 +18,7 @@
     function resize() {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
-        dpr = window.devicePixelRatio || 1;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
         scale = Math.min(vw / MAX_W, vh / MAX_H);
         W = Math.floor(MAX_W * scale);
         H = Math.floor(MAX_H * scale);
@@ -105,28 +105,23 @@
             ctx.rotate(pt.rotation);
             const sz = pt.size * s() * (0.5 + pt.life * 0.5);
 
-            // Night glow on particles
-            if (timeTheme.name === 'night') {
-                ctx.shadowColor = pt.color;
-                ctx.shadowBlur = sz * 1.5;
-            }
-
             if (pt.type === 'heart') {
-                // Simple heart shape
                 ctx.fillStyle = pt.color;
                 ctx.font = `${Math.round(sz)}px serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('\u2764', 0, 0);
             } else {
-                // Sparkle: filled circle with glow
+                // Fake glow: larger semi-transparent circle behind
                 ctx.fillStyle = pt.color;
-                ctx.shadowColor = pt.color;
-                ctx.shadowBlur = timeTheme.name === 'night' ? sz * 2 : sz * 0.8;
+                ctx.globalAlpha *= 0.3;
+                ctx.beginPath();
+                ctx.arc(0, 0, sz * 0.9, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = Math.max(0, pt.life);
                 ctx.beginPath();
                 ctx.arc(0, 0, sz * 0.4, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.shadowBlur = 0;
             }
 
             ctx.restore();
@@ -304,17 +299,21 @@
             ];
             for (const [sx, sy, sr, phase] of stars) {
                 const twinkle = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(now * (1.5 + phase * 0.3) + phase * 5));
+                const cx = sx*s(), cy = sy*s(), r = sr*s();
+                // Fake glow: larger dim circle
+                ctx.globalAlpha = twinkle * 0.25;
+                ctx.fillStyle = '#aaccff';
+                ctx.beginPath();
+                ctx.arc(cx, cy, r * 3, 0, Math.PI*2);
+                ctx.fill();
+                // Star core
                 ctx.globalAlpha = twinkle;
                 ctx.fillStyle = '#fff';
-                ctx.shadowColor = '#fff';
-                ctx.shadowBlur = sr * 3 * s();
                 ctx.beginPath();
-                ctx.arc(sx*s(), sy*s(), sr*s(), 0, Math.PI*2);
+                ctx.arc(cx, cy, r, 0, Math.PI*2);
                 ctx.fill();
             }
             ctx.globalAlpha = 1;
-            ctx.shadowBlur = 0;
-            ctx.shadowColor = 'transparent';
         }
 
         // Morning sun
@@ -383,11 +382,13 @@
         ctx.roundRect(scrX, scrY, scrW, scrH, 3*s());
         ctx.fill();
 
-        // Screen glow
+        // Screen glow — fake glow via expanded rect
         const isNight = timeTheme.name === 'night';
         if (isNight) {
-            ctx.shadowColor = '#00e5ff';
-            ctx.shadowBlur = 12 * s();
+            ctx.fillStyle = 'rgba(0,229,255,0.15)';
+            ctx.beginPath();
+            ctx.roundRect(scrX - 4*s(), scrY - 4*s(), scrW + 8*s(), scrH + 8*s(), 5*s());
+            ctx.fill();
         }
         ctx.fillStyle = '#00e5ff';
         ctx.globalAlpha = isNight ? 0.8 : 0.6;
@@ -395,21 +396,13 @@
         ctx.roundRect(scrX + 2*s(), scrY + 2*s(), scrW - 4*s(), scrH - 4*s(), 2*s());
         ctx.fill();
         ctx.globalAlpha = 1;
-        if (isNight) {
-            ctx.shadowBlur = 0;
-            ctx.shadowColor = 'transparent';
-        }
 
-        // Animated cells on screen
+        // Animated cells on screen (larger cells = fewer draws)
         ctx.save();
         ctx.beginPath();
         ctx.roundRect(scrX + 2*s(), scrY + 2*s(), scrW - 4*s(), scrH - 4*s(), 2*s());
         ctx.clip();
-        if (isNight) {
-            ctx.shadowColor = 'rgba(0, 255, 136, 0.9)';
-            ctx.shadowBlur = 6 * s();
-        }
-        const cellS = 4 * s();
+        const cellS = 6 * s();
         const pad = 2 * s();
         const cols = Math.floor((scrW - 4*s()) / cellS);
         const rows = Math.floor((scrH - 4*s()) / cellS);
@@ -505,11 +498,7 @@
         const headPuffColor = hsl(birdHue, 45, 92);
         const earColor = hsl(birdHue, 55, 80);
 
-        // Night: make all bird shapes glow
-        if (timeTheme.name === 'night') {
-            ctx.shadowColor = hsl(birdHue, 80, 75);
-            ctx.shadowBlur = 12 * s();
-        }
+        // Night: no shadowBlur — radial gradient glow above is enough
 
         // --- Fluffy body (behind head) ---
         ctx.fillStyle = bodyColor;
@@ -574,10 +563,6 @@
             ctx.arc(px, py, pr, 0, Math.PI * 2);
             ctx.fill();
         }
-
-        // Turn off glow for face details
-        ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
 
         // --- Eyes ---
         // White
