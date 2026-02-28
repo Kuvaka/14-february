@@ -213,7 +213,7 @@
         }
         if (bird.y < 0) { bird.y = 0; bird.vy = 0; }
 
-        if (frame % Math.floor(PIPE_SPAWN / PIPE_SPEED) === 0) spawnPipe();
+        if (frame % Math.floor(PIPE_SPAWN / (PIPE_SPEED * Math.min(s(), 1))) === 0) spawnPipe();
 
         const bx = bird.x, by = bird.y;
         const bs = BIRD_SIZE * s();
